@@ -1,0 +1,222 @@
+@font-face {
+    font-family: Merriweather-regular;
+    font-style: normal;
+    font-weight: 400;
+    src: url(/assets/font/Merriweather-Regular.ttf);
+    font-display: swap;
+    }
+@font-face {
+    font-family: Merriweather-bold;
+    font-style: bold;
+    font-weight: 700;
+    src: url(/assets/font/Merriweather-Bold.ttf);
+    font-display: swap;
+  }
+  
+*{
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+transition: all 300ms ease-in-out;
+scrollbar-width: none;
+text-decoration: none;
+-moz-appearance: none;
+-webkit-appearance: none;
+appearance: none;
+font-family:  Merriweather-regular, sans-serif;
+font-size: 1.1rem;
+line-height: 1.4;
+}
+*::-webkit-scrollbar {
+display: none;
+}
+:root {
+    --fontColor:rgb(21 25 34);
+    --bgdColor: #f1f5f8;
+    --btnColor: #43a5a1;
+    --white:#fff;
+}
+.column {
+display: flex;
+flex-direction: column;
+}
+.row {
+display: flex;
+flex-direction: row;
+}
+.flexWrap {
+    flex-wrap: wrap;
+}
+.alItCent {
+    align-items: center;
+}
+.justCoCent {
+    justify-content: center;
+}
+.justySpEv {
+justify-content: space-evenly;
+}
+.justySpBw {
+    justify-content: space-between;
+}
+.marinCent {
+    margin: 0 auto;
+}
+.clickItemsPadd {
+padding: .8em;
+cursor: pointer;
+}
+.boxSize {
+    padding: 20px;
+    width: 340px;
+}
+.marginTopOne {
+    margin-top: 3rem;
+}
+.marginTopTwo {
+    margin-top: 1.5rem;
+}
+.marginLeft {
+    margin-left: 2rem;
+}
+.padding {
+    padding: 6rem 0;
+}
+.paddingTopOne {
+    padding-top: 3rem;
+}
+.paddingTopTwo {
+    padding-top: 1.5rem;
+}
+.fontBold {
+    font-family: Merriweather-bold;
+}
+h1 {
+    font-size: 2.5rem;
+    font-family: Merriweather-bold;
+}
+h2 {
+    font-size: 2rem;
+    font-family: Merriweather-bold;
+}
+h3 {
+    font-size: 1.5rem;
+    font-family: Merriweather-bold;
+}
+.textUpper {
+    text-transform: uppercase;
+}
+.textCent {
+    text-align: center;
+}
+a {
+  color: var(--fontColor);
+}
+a:hover {
+    color: var(--btnColor);
+}
+li {
+    list-style-type: none;
+}
+.width100 {
+    width: 100%;
+}
+.heigh100{
+    height: 100vh;
+}
+.containerWidth {
+    width: 80%;
+}
+.svgImg {
+    filter: invert(58%) sepia(7%) saturate(3092%) hue-rotate(129deg) brightness(98%) contrast(85%);
+}
+.btnAll {
+    border: 1px solid rgb(208 209 211);
+    text-align: center;
+    width: 222px;
+    padding: 10px 20px;
+    border-radius: 4px;
+}
+/* .btnAll:hover {
+    background-color: var(--bgdColor);
+
+} */
+.btnWhite {
+    background-color: var(--white);
+    color: var(--fontColor);
+    border: 1px solid rgb(208 209 211);
+}
+.btnWhite:hover {
+    background-color: var(--btnColor);
+    color: var(--white);
+    border: 1px solid rgb(208 209 211);
+}
+.btnTurq {
+    color: var(--white);
+    background-color: var(--btnColor);
+}
+.btnTurq:hover {
+    color: var(--btnColor);
+    background-color: var(--white);
+}
+.redColor {
+    color: red;
+}
+/* full page */
+#fullPageSect {
+    width: 100vw;
+    height: 100vh;
+}
+/* left panel */
+#leftPanel {
+    width: 50%;
+    padding: 0 3rem;
+    background-color: var(--btnColor);
+    color:  var(--white);
+}
+#lPmessage {
+    height: 0px;
+    overflow: hidden;
+    opacity: 0;
+    background-color: var(--bgdColor);
+    color: var(--btnColor);
+}
+#lPmessage.active {
+    height: 100px;
+    opacity: 1;
+    border-radius: 5px;
+    text-align: center;
+    padding: 1rem;
+}
+/* right panel */
+#rightPanel {
+    width: 50%;
+    padding: 0 3rem;
+    background-color: var(--bgdColor);
+}
+#loginContainer {
+    padding: 2rem;
+    background-color: var(--btnColor);
+    border-radius: 4px;
+    box-shadow: 0px 1px 50px rgba(0, 0, 0, 0.5);
+}
+ input {
+    padding: 0.9rem;
+    border-left: none;
+    border-top: none;
+    border-right: none;
+    border-bottom: 1px solid var(--btnColor);
+ }
+ input:focus {
+    outline: none;
+    border-bottom: 2px solid var(--btnColor);
+ }
+ .inputLabels {
+    display: block;
+    color: var(--white);
+    font-size: 0.9rem;
+    opacity: 0;
+ }
+ .inputLabels.active {
+    opacity: 1;
+ }
