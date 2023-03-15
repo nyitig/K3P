@@ -170,5 +170,3 @@ function registOk() {
 
 const registerBtn=document.getElementById('registerBtn')
 registerBtn.addEventListener('click',inputValueCheck)
-
-// KÉsezn van?
