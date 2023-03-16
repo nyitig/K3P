@@ -138,6 +138,7 @@ function inputValueCheck () {
     validateEmail(emailvalue)
     if (!textOk) {
         wrongEmail()
+        return
     }
     // Do the passwords match?
      if (dataArr[3]!=dataArr[4]) {
@@ -167,6 +168,6 @@ function registOk() {
     
 }
 
-
 const registerBtn=document.getElementById('registerBtn')
 registerBtn.addEventListener('click',inputValueCheck)
+// ha hibára fut, akkor is továbblép!

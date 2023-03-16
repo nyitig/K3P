@@ -176,7 +176,6 @@ li {
     opacity: 0;
     text-align: center;
     padding: 1rem;
-    line-height: 1.6;
 }
 #welcomme.active {
     height: 120px;
@@ -217,4 +216,8 @@ li {
  }
  .inputLabels.active {
     opacity: 1;
+ }
+ #usersData {
+    max-width: 1280px;
+    overflow-wrap: break-word;
  }

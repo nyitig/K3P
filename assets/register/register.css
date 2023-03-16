@@ -160,7 +160,7 @@ li {
     background-color: var(--white);
 }
 .redColor {
-    color: red;
+    color: #02040a;
 }
 /* full page */
 #fullPageSect {
@@ -205,11 +205,17 @@ li {
     border-left: none;
     border-top: none;
     border-right: none;
-    border-bottom: 1px solid var(--btnColor);
+    border-bottom: 1px solid var(--bgdColor);
+    background-color: var(--btnColor);
+    color: var(--bgdColor);
+ }
+input::placeholder {
+    color: rgb(241 245 248);
+    opacity: 0.7;
  }
  input:focus {
     outline: none;
-    border-bottom: 2px solid var(--btnColor);
+    border-bottom: 2px solid var(--bgdColor);
  }
  .inputLabels {
     display: block;
