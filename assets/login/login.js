@@ -72,25 +72,54 @@ function createLoginData() {
             'Content-Type': 'application/json'
         }
     }
-    sendLoginData(url, options)
-    .then(results =>{resultsCheck(results)})
+    sendDatas(url, options)
+    .then(results =>{
+        let keyName="user"
+        resultsCheck(results,keyName)})
+    .then(results =>{getKdbxJsonStart()})
 }
-async function sendLoginData(url, options) {
+async function sendDatas(url, options) {
     const response= await fetch(url,options)
     return response.json()
 }
-async function resultsCheck(results) {
+async function resultsCheck(results,keyName) {
     // innen folytasd!
     if (results.status==undefined) {
         // Innen folytasd!
-        sessionStorage.setItem("user",JSON.stringify(results))
-        loadDashboard()
+        sessionStorage.setItem(keyName,JSON.stringify(results))
+        return true
     }
     if (results.status!=undefined) {
         if (results.status==401) {
             wrongDatas()
+            return
         }
     }
+}
+
+function getKdbxJsonStart() {
+    const url="http://127.0.0.1:9933/api/kdbx/1/groups/get-top-group"
+    const userLoginDatas=JSON.parse(sessionStorage.user)
+    const jwtToken=userLoginDatas.jwtToken
+    // Ez vszínű nem kell majd az új verziónál
+    const user={
+        "kdbxFilePwDto": "1"
+    }
+    const options= {
+        method:'POST',
+        body:JSON.stringify(user),
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept' : 'application/json',
+            'Authorization': `Bearer ${jwtToken}`,
+          },
+    }
+    sendDatas(url,options)
+    .then(results =>{
+        let keyName="kdbx"
+        resultsCheck(results,keyName)
+    })
+    .then(results=>{loadDashboard()})
 }
 
 function loadDashboard() {
@@ -113,6 +142,7 @@ function wrongDatas() {
         inputs[0].value=""
         inputs[0].classList.remove('redColor')
     }, 2000);
+    return
 }
 
 loginBtn.addEventListener('click', inputsCheck)
