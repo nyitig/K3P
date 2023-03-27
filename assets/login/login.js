@@ -83,16 +83,22 @@ async function sendDatas(url, options) {
     return response.json()
 }
 async function resultsCheck(results,keyName) {
+    checkOk=false
     // innen folytasd!
     if (results.status==undefined) {
         // Innen folytasd!
         sessionStorage.setItem(keyName,JSON.stringify(results))
-        return true
+        checkOk=true
+        return 
     }
     if (results.status!=undefined) {
         if (results.status==401) {
             wrongDatas()
-            return
+            return 
+        }
+        if (results.status==404) {
+            wrongDatas()
+            return  
         }
     }
 }
@@ -119,7 +125,9 @@ function getKdbxJsonStart() {
         let keyName="kdbx"
         resultsCheck(results,keyName)
     })
-    .then(results=>{loadDashboard()})
+    .then(results=>{
+        checkOk== true ? loadDashboard() : console.log("Nincs kdbx fájl")
+    })
 }
 
 function loadDashboard() {

@@ -26,14 +26,16 @@ appearance: none;
 font-family:  Merriweather-regular, sans-serif;
 font-size: 1.1rem;
 line-height: 1.4;
+color: var(--newColor);
 }
 *::-webkit-scrollbar {
 display: none;
 }
 :root {
+    --newColor:rgb(137, 95, 18);
     --fontColor:rgb(21 25 34);
     --bgdColor: #f1f5f8;
-    --btnColor: #43a5a1;
+    --btnColor: rgba(91, 165, 201, 1);
     --white:#fff;
 }
 .column {
@@ -126,6 +128,7 @@ li {
 }
 .maxWidth {
     max-width: 1366px;
+    margin: 0 auto;
 }
 .width100 {
     width: 100%;
@@ -138,6 +141,9 @@ li {
 }
 .svgImg {
     filter: invert(58%) sepia(7%) saturate(3092%) hue-rotate(129deg) brightness(98%) contrast(85%);
+}
+.svgImgBrown {
+    filter: invert(32%) sepia(68%) saturate(574%) hue-rotate(0deg) brightness(100%) contrast(90%);
 }
 .svgImgWhite {
     filter: invert(95%) sepia(17%) saturate(38%) hue-rotate(158deg) brightness(100%) contrast(96%);
@@ -183,6 +189,37 @@ li {
 body {
     background-color: var(--white);
 }
+/* header  */
+#header {
+    position: relative;
+    background-color: var(--bgdColor);
+    padding: 1rem 0;
+}
+#rPHeadMenuCont {
+    position: absolute;
+    right: 0;
+    padding-top: 0.7rem;
+    z-index: 10;
+}
+#menuArrow, #toolsArrow {
+    rotate: 0deg;
+}
+#menuArrow.active, #toolsArrow.active {
+    rotate: 180deg;
+}
+#header2Lev {
+    height: 0rem;
+    overflow: hidden;
+}
+#header2Lev.active {
+    height: 3.4rem;
+    overflow: visible;
+}
+
+/* main */
+#main {
+    border-top: 3px solid var(--white);
+}
 /* leftPanel */
 #leftPanel {
     height: 100vh;
@@ -198,7 +235,6 @@ body {
     height: 100vh;
     width: 70%;
     background-color: var(--bgdColor);
-    position: relative;
 }
 #rPHeader {
     padding: 1rem;
@@ -221,14 +257,7 @@ input {
  }
 
 /* menu styles */
-#rPHeadMenuCont {
-    margin-top: 1.7rem;
-    display: block;
-    position:absolute;
-    top: 0;
-    right: 0;
-    width: 250px;
-}
+
 #profPic {
     /* margin-top: 0.8em; */
 }
@@ -238,7 +267,7 @@ input {
     background-color: var(--bgdColor);
 }
 #menuUl.active {
-    height: 200px;
+    height: 250px;
     overflow: scroll;
 }
 .lis {
@@ -249,4 +278,7 @@ input {
 #groups{
     width: 30%;
     border-right: 2px solid var(--white);
+}
+#rPMain {
+    height: 100%;
 }

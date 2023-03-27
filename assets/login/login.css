@@ -33,7 +33,7 @@ display: none;
 :root {
     --fontColor:rgb(21 25 34);
     --bgdColor: #f1f5f8;
-    --btnColor: #43a5a1;
+    --btnColor: rgba(91, 165, 201, 1);
     --white:#fff;
 }
 .column {
@@ -128,7 +128,7 @@ li {
     width: 80%;
 }
 .svgImg {
-    filter: invert(58%) sepia(7%) saturate(3092%) hue-rotate(129deg) brightness(98%) contrast(85%);
+    filter: invert(59%) sepia(71%) saturate(288%) hue-rotate(155deg) brightness(88%) contrast(92%);
 }
 .btnAll {
     border: 1px solid rgb(208 209 211);
@@ -154,7 +154,7 @@ li {
     background-color: var(--btnColor);
 }
 .btnTurq:hover {
-    background-color: rgba(67, 165, 161, 0.7);
+    background-color: rgba(91, 165, 201, 0.7);
 
 }
 .redColor {
