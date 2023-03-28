@@ -25,3 +25,20 @@ function exitDashboard() {
   window.location.assign("/index.html")
 
 }
+
+// clear main panels
+
+function clearMainPanels() {
+  const leftPanel=document.getElementById('leftPanel')
+  const centerPanel=document.getElementById('centerPanel')
+  const rightPanel=document.getElementById('rightPanel')
+  leftPanel.innerHTML=""
+  centerPanel.innerHTML=""
+  rightPanel.innerHTML=""
+}
+
+// loading kdbx into main
+
+function loadKdbx() {
+  const kdbxOBj=JSON.parse(sessionStorage.kdbx)
+}

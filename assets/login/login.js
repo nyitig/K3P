@@ -140,7 +140,7 @@ function loadDashboard() {
     welcomme.classList.add('active')
      setTimeout(() => {
          window.location.assign("../dashboard/dashboard.html")
-     }, 5000);
+     }, 2000);
  }
 
 function wrongDatas() {
