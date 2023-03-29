@@ -70,8 +70,6 @@ const fullaPageTemplate=`
 </main>
 
 `
-
-debugger
 if (sessionStorage.kdbx!=undefined) {
   createFullPage()
 }

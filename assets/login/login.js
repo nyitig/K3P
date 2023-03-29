@@ -97,7 +97,9 @@ async function resultsCheck(results,keyName) {
             return 
         }
         if (results.status==404) {
-            wrongDatas()
+            // ideiglenesen kiszedve, h ne kelljen állandóan bejelentkeznem
+            // createkdbxObj()
+            checkOk=true
             return  
         }
     }
@@ -151,6 +153,10 @@ function wrongDatas() {
         inputs[0].classList.remove('redColor')
     }, 2000);
     return
+}
+
+function createkdbxObj() {
+    sessionStorage.setItem("kdbx",JSON.stringify("[]"))
 }
 
 loginBtn.addEventListener('click', inputsCheck)

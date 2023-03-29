@@ -2127,7 +2127,6 @@ const kdbxObj={
   "expanded": false,
   "customIconUuid": null
 }
-debugger
 
 if (sessionStorage.kdbx==undefined) {
   sessionStorage.setItem("kdbx", JSON.stringify(kdbxObj))
