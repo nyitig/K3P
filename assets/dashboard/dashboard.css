@@ -189,6 +189,13 @@ li {
 body {
     background-color: var(--white);
 }
+/* full page Section */
+#fullPageSect {
+    opacity: 0;
+}
+#fullPageSect.active {
+    opacity: 1;
+}
 /* header  */
 #header {
     position: relative;

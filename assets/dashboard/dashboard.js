@@ -23,7 +23,14 @@ quit.addEventListener("click", exitDashboard)
 function exitDashboard() {
   sessionStorage.clear()
   window.location.assign("/index.html")
+return
+}
+// show hide fullPageSect
 
+function showHideFullPageSect() {
+  const fullPageSect=document.getElementById('fullPageSect')
+  fullPageSect.classList.toggle('active')
+  return
 }
 
 // clear main panels
@@ -35,6 +42,7 @@ function clearMainPanels() {
   leftPanel.innerHTML=""
   centerPanel.innerHTML=""
   rightPanel.innerHTML=""
+  return
 }
 
 // loading kdbx into main
@@ -52,6 +60,7 @@ Elsőnek foglalkozzunk azzal, h a tree szerkezetet hogyan jeleníthetném meg
 Azaz 3 template kellene, h legyen
 
 */ 
+let kdbxObject=JSON.parse(sessionStorage.kdbx)
 let entriesTree=[]
 let groupsTree=[]
 let groupsTreeTemp=[]
@@ -68,98 +77,139 @@ const kdbxKeys={
 }
 let level=0
 let indexKdbx=0
-displayKdbxObj()
+groupsTree[level]=[]
+groupsTree[level][indexKdbx]=kdbxObject
+// az a gond, h a 0-s level nem egyezik meg  a1-es level struktúráját tekintve
 
-function displayKdbxObj() {
-  loadKdbx()
-  sorterKdbx(kdbxObj,level,indexKdbx)
+startDisplay()
+
+function startDisplay() {
+  //  debugger
+  // if (groupsTree[level].length==0) {
+  //   return
+  // }
+  for (let i = 0; i < groupsTree[level].length; i++) { 
+    let actObj=groupsTree[level]
+    let actIndex=i
+    displayKdbxObj(actObj, actIndex)  
+  }  
+
+  if (groupsTree[level+1]!=undefined) {
+    level++
+    startDisplay()
+  }else {
+    debugger
+    showHideFullPageSect()
+   return
+  }
+
 }
 
-function loadKdbx() {
-  const kdbxOBj=JSON.parse(sessionStorage.kdbx)
-  return kdbxOBj
+
+function displayKdbxObj(actObj,actIndex) {
+  // debugger
+  if (actObj[actIndex].uuid!=undefined) {
+     sorterKdbx(actObj,level,actIndex)
+  }
+  if (actObj[actIndex].uuid==undefined) {
+   return
+  }
 }
 
-function sorterKdbx(kdbxOBj,level,indexKdbx) {
-  let objBox=Object.entries(kdbxOBj)
+function sorterKdbx(actObj,level,actIndex) {
+  // debugger
+  let objBox=Object.entries(actObj[actIndex])
   for (let i = 0; i < objBox.length; i++) {
     // objBox[i][0]==name
     // objBox[i][1]== value (example:array)
+    indexKdbx=i
     switch (objBox[i][0]) {
       case kdbxKeys.uuid:
-        console.log(objBox[i][1])
+        // console.log(objBox[i][1])
         break;
       case kdbxKeys.name:
-        groupName(objBox[i][1],level,indexKdbx)
-        console.log(objBox[i][1])
+        // groupName(objBox[i][1],level,indexKdbx)
+        // console.log(objBox[i][1])
         break;
       case kdbxKeys.iconId:
-        console.log(objBox[i][1])
+        // console.log(objBox[i][1])
         break;
       case kdbxKeys.iconData:
-        console.log(objBox[i][1])
+        // console.log(objBox[i][1])
         break;
       case kdbxKeys.times:
-        console.log(objBox[i][1])
+        // console.log(objBox[i][1])
         break;
       case kdbxKeys.entries:
-        if (objBox[i][1].length==0) {
-          entriesTree[level]=[]
-        }
-        if (objBox[i][1].length>0) {
-          entriesSorter(objBox[i][1])
-        }        
+        // if (objBox[i][1].length==0) {
+        //   entriesTree[level]=[]
+        // }
+        // if (objBox[i][1].length>0) {
+           entriesSorter(objBox[i][1],level,actIndex)
+        // }        
         break;
       case kdbxKeys.groups:
-        if (objBox[i][1].length==0) {
-          groupsTree[level]==[]
-          groupsTreeTemp[level]=[]
-        }
-        if (objBox[i][1].length>0) {
-          groupsSorter(objBox[i][1])
-        }
+        groupsSorter(objBox[i][1])
+
         break;
       case kdbxKeys.expanded:
-        console.log(objBox[i][1])
+        // console.log(objBox[i][1])
         break;
       case kdbxKeys.customIconUuid:
-        console.log(objBox[i][1])
+        // console.log(objBox[i][1])
+        console.log("level: "+level)
         break;
       default:
         console.log(objBox[i][1]+"Wrong param")
         break;
     }    
   }
-  // Innen folytasd! Ide kell csinálj egy záró feltételt, h mikor legyen vége a rekurziónak!
+  return
 }
 
 // names
 function groupName(obj,level,index) {
-  if (groupsTreeTemp[level]!=undefined) {
-    
-  }
-
-  if (groupsTreeTemp[level]==undefined) {
-    groupsTreeTemp[level]=[]
-    groupsTreeTemp[level][index]=obj
-  }
+return
 }
 
 // entries sorter
 
 function entriesSorter(obj) {
   console.log("entriessorter ok")
-  console.log(obj)
+  // debugger
+// itt az aktuális entries-eket kapom meg. 
+if (obj.length==0) {
   if (entriesTree[level]!=undefined) {
-    let entriesTreeIndex=entriesTree[level].length
-    for (let i = 0; i < obj.length; i++) {
-      entriesTree[level][entriesTreeIndex]=(obj[i])
-      entriesTreeIndex++
-      }
+    let actObjLenght=entriesTree[level].length
+    let text="!=undefined"
+    entriesTree[level][actObjLenght]={text}
   }
   if (entriesTree[level]==undefined) {
-    entriesTree[level]=obj
+    entriesTree[level]=[]
+    let text="undefined"
+    entriesTree[level][0]={text}
   }
+
+  console.log("0 az obj.lenght")
+  return
+}
+if (entriesTree[level]!=undefined) {
+  let actObjLenght=entriesTree[level].length
+  if (obj.length!=0) {
+    for (let i = 0; i < obj.length; i++) {
+      entriesTree[level][actObjLenght]=obj[i]
+      actObjLenght++      
+    }
+  }else {
+    entriesTree[level][actObjLenght]=obj
+  }
+  console.log("entriesTree != undefined")
+  
+}
+if (entriesTree[level]==undefined) {
+  entriesTree[level]=[]
+  entriesTree[level]=obj
+}
 
 
 }
@@ -167,18 +217,41 @@ function entriesSorter(obj) {
 // groups sorter
 
 function groupsSorter(obj) {
+  // 
   console.log("groupssorter ok")
-  console.log(obj)
-  if (groupsTree[level]!=undefined) {
-    let groupsTreeIndex=groupsTree[level].length
-    for (let i = 0; i < obj.length; i++) {
-      gruopsTree[level][groupsTreeIndex]=(obj[i])
-      groupsTreeIndex++
-      
-    }
-  }
-  if (groupsTree[level]==undefined) {
-    groupsTree[level]=obj
-  }
+  // debugger
+  let newlevel=level+1
+  if (obj.length==0) {
+    if (groupsTree[newlevel]!=undefined) {
+      let actObjLenght=groupsTree[newlevel].length
+      let text="!=undefined"
+       groupsTree[newlevel][actObjLenght]={text}
 
+    }
+    if (groupsTree[newlevel]==undefined) {
+      groupsTree[newlevel]=[]
+      let text="undefined"
+      groupsTree[newlevel][0]={text}
+    }
+    return
+  }
+  if (groupsTree[newlevel]!=undefined) {
+    let actObjLenght=groupsTree[newlevel].length
+    if (obj.length!=0) {
+      for (let i = 0; i < obj.length; i++) {
+        groupsTree[newlevel][actObjLenght]=obj[i]
+        actObjLenght++
+
+    }
+    }else  {
+      
+      groupsTree[newlevel][actObjLenght]=obj
+    }
+
+
+  }
+  if (groupsTree[newlevel]==undefined) {
+    groupsTree[newlevel]=[]
+    groupsTree[newlevel]=obj
+  }
 }
