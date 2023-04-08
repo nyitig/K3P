@@ -45,25 +45,37 @@ function clearMainPanels() {
   return
 }
 
-// loading kdbx into main
+/*loading kdbx into main*/ 
 /*
 Mit is kellene csinálni?
-- groups a #leftPanelben jelennének meg
+- groups a #leftPanelben jelennének meg => ez készen van
 - entries a #centerPanelben jelennének meg
 - entries összes tulajdonsága pedig a #rightPanelben
+*/
 
-Elsőnek foglalkozzunk azzal, h a tree szerkezetet hogyan jeleníthetném meg
- - szintenént nézzük meg, h a groupban mennyi group van
-    - tehát kell egy level index (azaz az az index, amelyik szinten vagyok)
-    - 
-
-Azaz 3 template kellene, h legyen
-
-*/ 
 let kdbxObject=JSON.parse(sessionStorage.kdbx)
-let entriesTree=[]
+let idsTree=[["leftPanel"]]
+let elemidsArray=[["leftPanel"]]
 let groupsTree=[]
-let groupsTreeTemp=[]
+let groupsNameTree=[]
+let iconIdsTree=[]
+let liIndexArr=[]
+
+// entries array
+let entriesTree=[]
+let entriesTreeIdsArr=[]
+
+// keys
+const iconIdsSrcObj={
+  0:"/assets/pic/key-outline.svg",
+  1:"/assets/pic/cloud-outline.svg",
+  2:"/assets/pic/globe-outline.svg",
+  3:"/assets/pic/mail-outline.svg",
+  4:"/assets/pic/terminal-outline.svg",
+  5:"/assets/pic/storefront-outline.svg",
+  6:"/assets/pic/logo-python.svg",
+  49:"/assets/pic/folder-outline.svg",
+}
 const kdbxKeys={
   uuid:"uuid",
   name:"name",
@@ -75,64 +87,74 @@ const kdbxKeys={
   expanded:"expanded",
   customIconUuid:"customIconUuid",
 }
+const entriesKeys={
+  iconData:"iconData",
+  notes:"notes",
+  iconId:"iconId",
+  title:"title",
+  password:"password",
+  url:"url",
+  username:"username",
+}
 let level=0
 let indexKdbx=0
 groupsTree[level]=[]
+liIndexArr[0]=[1]
 groupsTree[level][indexKdbx]=kdbxObject
-// az a gond, h a 0-s level nem egyezik meg  a1-es level struktúráját tekintve
 
 startDisplay()
 
 function startDisplay() {
-  //  debugger
-  // if (groupsTree[level].length==0) {
-  //   return
-  // }
   for (let i = 0; i < groupsTree[level].length; i++) { 
     let actObj=groupsTree[level]
-    let actIndex=i
+    let actIndex=i 
     displayKdbxObj(actObj, actIndex)  
   }  
-
   if (groupsTree[level+1]!=undefined) {
     level++
+
     startDisplay()
   }else {
-    debugger
+    // debugger
+     loadLeftPanel()
+    loadCenterPanel()
     showHideFullPageSect()
    return
   }
 
 }
 
-
 function displayKdbxObj(actObj,actIndex) {
-  // debugger
+    //  debugger
+    
+    // itt mindig az aktuális objektum van
   if (actObj[actIndex].uuid!=undefined) {
-     sorterKdbx(actObj,level,actIndex)
+    // leftPanelTemplate+=`<li id="" class="" data-target="level${level}Index${actIndex}">`
+     sorterKdbx(actObj,actIndex)
+    return
   }
   if (actObj[actIndex].uuid==undefined) {
    return
   }
 }
 
-function sorterKdbx(actObj,level,actIndex) {
-  // debugger
+function sorterKdbx(actObj,actIndex) {
+    // debugger
   let objBox=Object.entries(actObj[actIndex])
   for (let i = 0; i < objBox.length; i++) {
     // objBox[i][0]==name
     // objBox[i][1]== value (example:array)
-    indexKdbx=i
+    
     switch (objBox[i][0]) {
       case kdbxKeys.uuid:
-        // console.log(objBox[i][1])
+        //  console.log(objBox[i][1])
         break;
       case kdbxKeys.name:
-        // groupName(objBox[i][1],level,indexKdbx)
-        // console.log(objBox[i][1])
+        // debugger
+        groupKeysToArray(objBox[i][1], groupsNameTree)
         break;
       case kdbxKeys.iconId:
-        // console.log(objBox[i][1])
+        groupKeysToArray(objBox[i][1], iconIdsTree)
         break;
       case kdbxKeys.iconData:
         // console.log(objBox[i][1])
@@ -141,15 +163,11 @@ function sorterKdbx(actObj,level,actIndex) {
         // console.log(objBox[i][1])
         break;
       case kdbxKeys.entries:
-        // if (objBox[i][1].length==0) {
-        //   entriesTree[level]=[]
-        // }
-        // if (objBox[i][1].length>0) {
-           entriesSorter(objBox[i][1],level,actIndex)
-        // }        
+           entriesSorter(objBox[i][1],actIndex)
+               
         break;
       case kdbxKeys.groups:
-        groupsSorter(objBox[i][1])
+          groupsSorter(objBox[i][1],actIndex)
 
         break;
       case kdbxKeys.expanded:
@@ -157,7 +175,6 @@ function sorterKdbx(actObj,level,actIndex) {
         break;
       case kdbxKeys.customIconUuid:
         // console.log(objBox[i][1])
-        console.log("level: "+level)
         break;
       default:
         console.log(objBox[i][1]+"Wrong param")
@@ -168,90 +185,271 @@ function sorterKdbx(actObj,level,actIndex) {
 }
 
 // names
-function groupName(obj,level,index) {
+function groupKeysToArray(obj,array) {
+  if (array[level]!=undefined) {
+    let arrayIndex=array[level].length
+  array[level][arrayIndex]=obj
+  return    
+  }
+  if (array[level]==undefined) {
+    array[level]=[]
+    array[level][0]=obj 
+    return   
+  }
 return
 }
 
 // entries sorter
 
-function entriesSorter(obj) {
-  console.log("entriessorter ok")
-  // debugger
+function entriesSorter(obj,actIndex) {
+  //  debugger
 // itt az aktuális entries-eket kapom meg. 
 if (obj.length==0) {
   if (entriesTree[level]!=undefined) {
     let actObjLenght=entriesTree[level].length
-    let text="!=undefined"
+    let text="none"
     entriesTree[level][actObjLenght]={text}
+    return
   }
   if (entriesTree[level]==undefined) {
     entriesTree[level]=[]
-    let text="undefined"
+    let text="none"
     entriesTree[level][0]={text}
+    return
   }
-
-  console.log("0 az obj.lenght")
   return
 }
-if (entriesTree[level]!=undefined) {
-  let actObjLenght=entriesTree[level].length
-  if (obj.length!=0) {
-    for (let i = 0; i < obj.length; i++) {
-      entriesTree[level][actObjLenght]=obj[i]
-      actObjLenght++      
-    }
-  }else {
+if (obj.length!=0) {
+  if (entriesTree[level]!=undefined) {
+    let actObjLenght=entriesTree[level].length
     entriesTree[level][actObjLenght]=obj
+    return
   }
-  console.log("entriesTree != undefined")
-  
+  if (entriesTree[level]==undefined) {
+    entriesTree[level]=[]
+    entriesTree[level][0]=obj
+    return
+  }
+  return
 }
-if (entriesTree[level]==undefined) {
-  entriesTree[level]=[]
-  entriesTree[level]=obj
-}
-
-
+return
 }
 
 // groups sorter
 
-function groupsSorter(obj) {
-  // 
-  console.log("groupssorter ok")
-  // debugger
+function groupsSorter(obj,actIndex) {
   let newlevel=level+1
   if (obj.length==0) {
     if (groupsTree[newlevel]!=undefined) {
       let actObjLenght=groupsTree[newlevel].length
-      let text="!=undefined"
-       groupsTree[newlevel][actObjLenght]={text}
-
+      let text="none"
+      groupsTree[newlevel][actObjLenght]={text}
+      idsTree[newlevel][actObjLenght]=text
     }
     if (groupsTree[newlevel]==undefined) {
       groupsTree[newlevel]=[]
-      let text="undefined"
+      let text="none"
       groupsTree[newlevel][0]={text}
+      idsTree[newlevel]=[]
+      
+      idsTree[newlevel][0]=text
+    }
+    if (liIndexArr[newlevel]==undefined) {
+      liIndexArr[newlevel]=[]
     }
     return
   }
   if (groupsTree[newlevel]!=undefined) {
     let actObjLenght=groupsTree[newlevel].length
+    let actLiIndex=liIndexArr[newlevel].length
+    liIndexArr[newlevel][actLiIndex]=obj.length
     if (obj.length!=0) {
       for (let i = 0; i < obj.length; i++) {
         groupsTree[newlevel][actObjLenght]=obj[i]
+        let text="lev"+level+"ind"+actIndex
+        idsTree[newlevel][actObjLenght]=text
         actObjLenght++
-
     }
     }else  {
-      
-      groupsTree[newlevel][actObjLenght]=obj
+      groupsTree[newlevel][actObjLenght]=obj     
     }
-
-
   }
   if (groupsTree[newlevel]==undefined) {
     groupsTree[newlevel]=[]
     groupsTree[newlevel]=obj
+    idsTree[newlevel]=[]
+    liIndexArr[newlevel]=[obj.length]
+    for (let i=0; i< obj.length; i++) {
+      let text=`lev${level}ind${actIndex}`
+      idsTree[newlevel][i]=text
+    }
+    return
+  }
+  return
+}
+
+/* LEFT PANEL CREATE FUNCTIONS */ 
+
+// create elemIdsArray
+
+function createElemIdsArray() {
+  for (let a = 1; a < idsTree.length; a++) {
+    if (elemidsArray[a]==undefined) {
+      elemidsArray[a]=[]
+    }
+    for (let it of idsTree[a]) {
+      if (elemidsArray[a].indexOf(it)===-1) {
+        elemidsArray[a].push(it)
+      }
+    }
+  }
+}
+
+// left panel load
+
+function loadLeftPanel() {
+ createElemIdsArray()
+  createLeftPanelDom()
+  return
+}
+
+// left panel DOM create 
+
+function createLeftPanelDom() {
+   let olBeginTag=`<ol class="column olbox" `
+   let imgBegin=`<img class="imgLeftPanel svgImgBrown" src=`
+   let imgCenter=` alt="" width="30" height="30"`
+   let dataTarget=` data-target=`
+   let liBeginTag=`<li class="liLeftPanel" id=`
+   let tagEnd=`>`
+   let liEndTag=`</li>`
+   let olEndTag=`</ol>`
+   let spanBegin=`<span>`
+   let spanEnd=`</span>`
+   let divBegin=`<div class="row alItCent"`
+   let divEnd=`</div>`
+   let gropNameTreeIndex=0
+ for (let asd = 0; asd < elemidsArray.length; asd++) {
+  gropNameTreeIndex=0
+  for (let i = 0; i < elemidsArray[asd].length; i++) {
+    let tagId=elemidsArray[asd][i]
+    if (tagId!="none") {
+          let elem=document.getElementById(tagId)
+    let leftPanelTemplate=``
+    leftPanelTemplate+=olBeginTag+tagEnd
+    for (let y = 0; y < idsTree[asd].length; y++) {
+      if (elemidsArray[asd][i]==idsTree[asd][y] && elemidsArray[asd][i]!="none") {
+        let iconIdsNumber=iconIdsTree[asd][gropNameTreeIndex]
+        let imgSrc=iconIdsSrcObj[iconIdsNumber]
+        let liIds=`lev${asd}ind${y}`
+        if (entriesTreeIdsArr[asd]!=undefined) {
+          let index2=entriesTreeIdsArr[asd].length
+          entriesTreeIdsArr[asd][index2]=liIds
+        }
+        if (entriesTreeIdsArr[asd]==undefined) {
+          entriesTreeIdsArr[asd]=[]
+          entriesTreeIdsArr[asd][0]=liIds
+        }
+        leftPanelTemplate+=liBeginTag+liIds+tagEnd+divBegin+dataTarget+liIds+tagEnd+imgBegin+imgSrc+imgCenter+tagEnd+spanBegin+groupsNameTree[asd][gropNameTreeIndex]+spanEnd+divEnd
+        gropNameTreeIndex++
+      }
+    }
+    leftPanelTemplate+=liEndTag+olEndTag
+    elem.innerHTML+=leftPanelTemplate
+    }
+  }
+ } 
+ }
+
+/* CENTER PANEL CREATE FUNCTIONS*/  
+
+/*
+Mi mindent kell csinálni?
+- össze kell kötni a group-ot az entriesekkel div data-target==div data-groupIds
+ - entriesTreeIdsArr[level][index] ez adja meg  <div data-groupIds= értéket.> Ez az első div
+- entriesTree[level][index][index2] a hozzá tartozó entriek pozícióját adja meg. Az liben  data-entries= érték kell, h legyen>
+
+*/ 
+function loadCenterPanel() {
+  createCenterPanelDom()
+  return
+}
+
+function createCenterPanelDom() {
+  const centerPanel=document.getElementById('centerPanel')
+  let centerPanelTemplate=``
+  let divIds=`<div id="" class="centerPanelDiv" data-groupIds=`
+  let tagEnd=`>`
+  let olBeginTag=`<ol class="column" >`
+  let divBeginTag=`<div class="column centerPanmarginBottom" data-entries=`
+  let divRowTag=`<div class="row alItCent">`
+  let imgBegin=`<img class="" src=`
+  let imgCenter=` alt="" width="20" height="20"`
+  let spanBegin=`<span>`
+  let spanBoldBegin=`<span class="centerPanelSpanBold">`
+  let spanEnd=`</span>`
+  let liSec=`<li>`
+  let liEndTag=`</li>`
+  let olEndTag=`</ol>`
+  let divEndTag=`</div>`
+
+  for (let i = 0; i < entriesTreeIdsArr.length; i++) {
+    for (let y = 0; y < entriesTreeIdsArr[i].length; y++) {
+      let groupIds=entriesTreeIdsArr[i][y]
+      centerPanelTemplate+=divIds+groupIds+tagEnd //div
+      // centerPanelTemplate+=olBeginTag // ol
+      for (let z = 0; z < entriesTree[i][y].length; z++) {
+        let entriesId=`lev${i}ind${y}ind${z}`
+        centerPanelTemplate+=divBeginTag+entriesId+tagEnd // div tag
+        let imgSrcNum=entriesTree[i][y][z].iconId
+        centerPanelTemplate+=divRowTag+imgBegin+iconIdsSrcObj[imgSrcNum]+imgCenter+tagEnd //img tag
+        centerPanelTemplate+=spanBoldBegin+entriesTree[i][y][z].title+spanEnd //span+title
+        centerPanelTemplate+=divEndTag //</li>
+        centerPanelTemplate+=spanBegin+entriesTree[i][y][z].username+spanEnd
+        centerPanelTemplate+=divEndTag
+        
+      }
+      centerPanelTemplate+=olEndTag+divEndTag
+    }
+    
+  }
+  centerPanel.innerHTML+=centerPanelTemplate
+  activatedGroupEntries()
+  return
+}
+
+//  group  & this entries active
+
+function activatedGroupEntries() {
+  const dataTarget=document.querySelectorAll('[data-target]')
+  const dataGroupIds=document.querySelectorAll('[data-groupIds]')
+  for (let i = 0; i < dataTarget.length; i++) {
+    dataTarget[i].addEventListener('click',()=>{
+      // debugger
+      // classlist 
+      for (let y = 0; y < dataTarget.length; y++) {
+        // add clicked div active class, remove other div class
+        if (i==y) {
+          if (!dataTarget[y].classList.contains('active')) {
+            dataTarget[y].classList.add('active')
+          }
+        }
+        if (i!=y) {
+          dataTarget[y].classList.remove('active')
+        }
+        // show, hide entries
+        let dataTargetValue=dataTarget[i].attributes[1].value
+        let groupIdsValue=dataGroupIds[y].attributes[2].value
+        if (dataTargetValue==groupIdsValue) {
+          dataGroupIds[y].classList.add('active')
+        }
+        if (dataTargetValue!=groupIdsValue) {
+          dataGroupIds[y].classList.remove('active')
+
+        }
+      }
+    })
+    
+    
   }
 }

@@ -164,7 +164,7 @@ const kdbxObj={
       {
           "uuid": "fca78a1e-a57c-45e5-94f6-462ded7b419e",
           "name": "webshop",
-          "iconId": 49,
+          "iconId": 5,
           "iconData": null,
           "times": null,
           "entries": [
@@ -674,7 +674,7 @@ const kdbxObj={
       {
           "uuid": "fc96d375-cf52-40f3-86e1-1079b41cbcc9",
           "name": "email",
-          "iconId": 49,
+          "iconId": 3,
           "iconData": null,
           "times": null,
           "entries": [
@@ -1006,7 +1006,7 @@ const kdbxObj={
       {
           "uuid": "8fde0166-bc08-4ebd-a18f-3a3981850126",
           "name": "IT",
-          "iconId": 49,
+          "iconId": 2,
           "iconData": null,
           "times": null,
           "entries": [
@@ -1257,7 +1257,7 @@ const kdbxObj={
               {
                   "uuid": "000b5fe2-d1d4-4cab-b556-fafc2bc1e969",
                   "name": "Cloud",
-                  "iconId": 49,
+                  "iconId": 1,
                   "iconData": null,
                   "times": null,
                   "entries": [
@@ -1525,7 +1525,7 @@ const kdbxObj={
               {
                   "uuid": "ed144750-e1f8-46c8-ba0f-9f79578aad07",
                   "name": "prog",
-                  "iconId": 49,
+                  "iconId": 4,
                   "iconData": null,
                   "times": null,
                   "entries": [],
@@ -1953,7 +1953,7 @@ const kdbxObj={
                       {
                           "uuid": "da7b7ac8-5de1-4991-b9c4-6eefcc0f08c1",
                           "name": "python",
-                          "iconId": 49,
+                          "iconId": 6,
                           "iconData": null,
                           "times": null,
                           "entries": [

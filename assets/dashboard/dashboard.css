@@ -24,7 +24,7 @@ text-decoration: none;
 -webkit-appearance: none;
 appearance: none;
 font-family:  Merriweather-regular, sans-serif;
-font-size: 1.1rem;
+font-size: 1.0rem;
 line-height: 1.4;
 color: var(--newColor);
 }
@@ -233,16 +233,55 @@ body {
     width: 20%;
     background-color: rgba(91, 165, 201, 0.3);
     color: var(--newColor);
-    padding-left: 2rem;
+    padding-left: 0.2rem;
     padding-top: 3rem;
 }
-
+.olbox {
+    margin-left: 10px;
+    padding: 0.5rem 0rem;
+}
+.imgLeftPanel {
+    width: 30px;
+    height: 30px;
+    padding-right: 10px;
+}
+.liLeftPanel {
+    cursor: pointer;
+}
+[data-target] {
+    padding-left: 10px;
+    width: 80%;
+    border-radius: 6px;
+}
+[data-target].active {
+    background-color: var(--bgdColor);
+}
 /* centerPanel */
 #centerPanel {
     height: 100vh;
     width: 30%;
     background-color: var(--bgdColor);
     border-right: 3px solid var(--white);
+}
+.centerPanelDiv {
+    position: absolute;
+    z-index: 0;
+    top: 1900px;
+    margin: 0.5rem;
+    max-height: 0px;
+    overflow: hidden;
+}
+.centerPanelDiv.active {
+    top: auto;
+    z-index: 1;
+    max-height: 2000px;
+}
+.centerPanelSpanBold {
+    font-weight: bold;
+    padding-left: 10px;
+}
+.centerPanmarginBottom {
+    margin-bottom: 0.5rem;
 }
 /* rightPanel */
 #rightPanel {

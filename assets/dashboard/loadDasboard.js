@@ -32,23 +32,23 @@ const fullaPageTemplate=`
     </div>
 </section>
 <section id="header2Lev" class="row marginTopTwo">
-    <div id="createKdbx" class="row alItCent paddingLeftRight btnAll btnWhite marginLeft2">
+    <div id="" class="row alItCent paddingLeftRight btnAll btnWhite marginLeft2">
         <img class="svgIcons svgImg" src="/assets/pic/add-outline.svg" width="30" height="30" alt="">
         <span class="marginLeft1 turkColor">Function1</span>
     </div>
-    <div id="createKdbx" class="row alItCent paddingLeftRight btnAll btnWhite marginLeft2">
+    <div id="" class="row alItCent paddingLeftRight btnAll btnWhite marginLeft2">
         <img class="svgIcons svgImg" src="/assets/pic/add-outline.svg" width="30" height="30" alt="">
         <span class="marginLeft1 turkColor">Function2</span>
     </div>
-    <div id="createKdbx" class="row alItCent paddingLeftRight btnAll btnWhite marginLeft2">
+    <div id="" class="row alItCent paddingLeftRight btnAll btnWhite marginLeft2">
         <img class="svgIcons svgImg" src="/assets/pic/add-outline.svg" width="30" height="30" alt="">
         <span class="marginLeft1 turkColor">Function3</span>
     </div>
-    <div id="createKdbx" class="row alItCent paddingLeftRight btnAll btnWhite marginLeft2">
+    <div id="" class="row alItCent paddingLeftRight btnAll btnWhite marginLeft2">
         <img class="svgIcons svgImg" src="/assets/pic/add-outline.svg" width="30" height="30" alt="">
         <span class="marginLeft1 turkColor">Function4</span>
     </div>
-    <div id="createKdbx" class="row alItCent paddingLeftRight btnAll btnWhite marginLeft2">
+    <div id="" class="row alItCent paddingLeftRight btnAll btnWhite marginLeft2">
         <img class="svgIcons svgImg" src="/assets/pic/add-outline.svg" width="30" height="30" alt="">
         <span class="marginLeft1 turkColor">Function5</span>
     </div>
