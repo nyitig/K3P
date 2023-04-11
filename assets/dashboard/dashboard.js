@@ -118,6 +118,7 @@ function startDisplay() {
     // debugger
      loadLeftPanel()
     loadCenterPanel()
+    loadRightPanel()
     showHideFullPageSect()
    return
   }
@@ -363,13 +364,6 @@ function createLeftPanelDom() {
 
 /* CENTER PANEL CREATE FUNCTIONS*/  
 
-/*
-Mi mindent kell csinálni?
-- össze kell kötni a group-ot az entriesekkel div data-target==div data-groupIds
- - entriesTreeIdsArr[level][index] ez adja meg  <div data-groupIds= értéket.> Ez az első div
-- entriesTree[level][index][index2] a hozzá tartozó entriek pozícióját adja meg. Az liben  data-entries= érték kell, h legyen>
-
-*/ 
 function loadCenterPanel() {
   createCenterPanelDom()
   return
@@ -381,11 +375,11 @@ function createCenterPanelDom() {
   let divIds=`<div id="" class="centerPanelDiv" data-groupIds=`
   let tagEnd=`>`
   let olBeginTag=`<ol class="column" >`
-  let divBeginTag=`<div class="column centerPanmarginBottom" data-entries=`
+  let divBeginTag=`<div class="column centerPanmarginBottom cursorPoint" data-entries=`
   let divRowTag=`<div class="row alItCent">`
   let imgBegin=`<img class="" src=`
   let imgCenter=` alt="" width="20" height="20"`
-  let spanBegin=`<span>`
+  let spanBegin=`<span class="centerPanelSpan">`
   let spanBoldBegin=`<span class="centerPanelSpanBold">`
   let spanEnd=`</span>`
   let liSec=`<li>`
@@ -404,8 +398,8 @@ function createCenterPanelDom() {
         let imgSrcNum=entriesTree[i][y][z].iconId
         centerPanelTemplate+=divRowTag+imgBegin+iconIdsSrcObj[imgSrcNum]+imgCenter+tagEnd //img tag
         centerPanelTemplate+=spanBoldBegin+entriesTree[i][y][z].title+spanEnd //span+title
-        centerPanelTemplate+=divEndTag //</li>
-        centerPanelTemplate+=spanBegin+entriesTree[i][y][z].username+spanEnd
+        centerPanelTemplate+=divEndTag //</div>
+        centerPanelTemplate+=spanBegin+entriesTree[i][y][z].username+spanEnd //username
         centerPanelTemplate+=divEndTag
         
       }
@@ -414,7 +408,7 @@ function createCenterPanelDom() {
     
   }
   centerPanel.innerHTML+=centerPanelTemplate
-  activatedGroupEntries()
+
   return
 }
 
@@ -423,6 +417,8 @@ function createCenterPanelDom() {
 function activatedGroupEntries() {
   const dataTarget=document.querySelectorAll('[data-target]')
   const dataGroupIds=document.querySelectorAll('[data-groupIds]')
+  const dataEntries=document.querySelectorAll('[data-entries]')
+  const dataEntriesId=document.querySelectorAll('[data-entriesId]')
   for (let i = 0; i < dataTarget.length; i++) {
     dataTarget[i].addEventListener('click',()=>{
       // debugger
@@ -448,8 +444,106 @@ function activatedGroupEntries() {
 
         }
       }
-    })
-    
-    
+      // remove all entries marked & active class
+      for (let a = 0; a < dataEntries.length; a++) {
+        dataEntries[a].classList.remove('marked')
+
+        
+      }
+      for (let i = 0; i < dataEntriesId.length; i++) {
+        dataEntriesId[i].classList.remove('active')
+      }
+    })    
   }
+}
+
+
+/* CREATE RIGHT PANEL*/ 
+
+
+
+function loadRightPanel() {
+  createRightPanelDOM()
+  activatedGroupEntries()
+  showHideEntries()
+  return
+}
+
+function createRightPanelDOM() {
+  const rightPanel=document.getElementById('rightPanel')
+  let rightPanelTemplate=``
+  let divIds=`<div id="" class="column rightPanelDiv" data-entriesId="`
+  let tagEnd=`">`
+  let divEndTag=`</div>`
+  let spanBegin=`<span class="entriesTitle fontBold">`
+  let spanEnd=`</span>`
+  let tableBegin=`<div class="rightPanelTableTag">`
+  let tableEnd=`</div>`
+  let trBegin=`<div class="rightPanelTr row">`
+  let trEnd=`</div>`
+  let tdBegin=`<div class="rightPanelTd">`
+  let tdEnd=`</div>`
+  let aBegin=` <a href="http://`
+  let aCenter=`" target="_blank" rel="noopener noreferrer">`
+  let aEnd=`</a>`
+  for (let i = 0; i < entriesTree.length; i++) {
+    for (let y = 0; y < entriesTree[i].length; y++) {
+      for (let z = 0; z < entriesTree[i][y].length; z++) {
+        rightPanelTemplate=``
+        let entriesData=entriesTree[i][y][z]
+        let dataEntriesId=`lev${i}ind${y}ind${z}`
+        rightPanelTemplate+=divIds+dataEntriesId+tagEnd //div
+        rightPanelTemplate+=spanBegin+entriesData.title+spanEnd //title span
+        rightPanelTemplate+=tableBegin+trBegin //
+        rightPanelTemplate+=tdBegin+"Username: "+tdEnd
+        rightPanelTemplate+=tdBegin+entriesData.username+tdEnd
+        rightPanelTemplate+=trEnd
+        rightPanelTemplate+=trBegin
+        rightPanelTemplate+=tdBegin+"Password: "+tdEnd
+        rightPanelTemplate+=tdBegin+entriesData.password+tdEnd
+        rightPanelTemplate+=trEnd
+        rightPanelTemplate+=trBegin
+        rightPanelTemplate+=tdBegin+"Website "+tdEnd
+        rightPanelTemplate+=tdBegin+aBegin+entriesData.url+aCenter+entriesData.url+aEnd+tdEnd
+        rightPanelTemplate+=trEnd
+        rightPanelTemplate+=trBegin
+        rightPanelTemplate+=tdBegin+"Notes: "+tdEnd
+        rightPanelTemplate+=tdBegin+entriesData.notes+tdEnd
+        rightPanelTemplate+=trEnd
+        rightPanelTemplate+=tableEnd+divEndTag
+        rightPanel.innerHTML+=rightPanelTemplate
+      }
+    }
+  }
+//  TODO Innen folytasd!
+  return
+}
+
+function showHideEntries() {
+  const dataEntries=document.querySelectorAll('[data-entries]')
+  const dataEntriesId=document.querySelectorAll('[data-entriesId]')
+  for (let i = 0; i < dataEntries.length; i++) {
+    dataEntries[i].addEventListener("click",()=> {
+      for (let a = 0; a < dataEntries.length; a++) {
+        if (a==i) {
+          dataEntries[a].classList.add('marked')
+        }
+        if (a!=i) {
+          dataEntries[a].classList.remove('marked')
+
+        }
+      }
+      let dataEntriesValue=dataEntries[i].attributes[1].value
+      for (let y = 0; y < dataEntriesId.length; y++) {
+        let dataEntriesIdValue=dataEntriesId[y].attributes[2].value
+        if (dataEntriesValue==dataEntriesIdValue) {
+          dataEntriesId[y].classList.add('active')
+        }
+        if (dataEntriesValue!=dataEntriesIdValue) {
+          dataEntriesId[y].classList.remove('active')
+        }
+      }
+    })    
+  }
+  return
 }

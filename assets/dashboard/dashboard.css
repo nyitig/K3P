@@ -265,6 +265,7 @@ body {
 }
 .centerPanelDiv {
     position: absolute;
+    opacity: 0;
     z-index: 0;
     top: 1900px;
     margin: 0.5rem;
@@ -272,15 +273,27 @@ body {
     overflow: hidden;
 }
 .centerPanelDiv.active {
+    width: 18rem;
+    border-radius: 6px;
+    opacity: 1;
     top: auto;
     z-index: 1;
     max-height: 2000px;
+}
+[data-entries].marked {
+    width: 18rem;
+    border-radius: 6px;
+    background-color: rgba(91, 165, 201, 0.3);
+}
+.centerPanelSpan{
+    margin-top: 5px;
 }
 .centerPanelSpanBold {
     font-weight: bold;
     padding-left: 10px;
 }
 .centerPanmarginBottom {
+    padding: 0.5rem;
     margin-bottom: 0.5rem;
 }
 /* rightPanel */
@@ -288,6 +301,42 @@ body {
     height: 100vh;
     width: 50%;
     background-color: var(--bgdColor);
+}
+.rightPanelDiv {
+    position: absolute;
+    top: 1900px;
+    z-index: 0;
+    overflow: hidden;
+    opacity: 0;
+    max-height: 0px;
+    width: 80%;
+    margin: 0.5rem;
+}
+.rightPanelDiv.active {
+    top: auto;
+    opacity: 1;
+    z-index: 1;
+    max-height: 2000px;
+}
+.entriesTitle {
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+.rightPanelTableTag {
+    border-collapse: collapse;
+    margin-top: 10px;
+    text-align: center;
+}
+.rightPanelTr {
+}
+.rightPanelTd:nth-child(1) {
+    width: 8rem;
+    text-align: end;
+    margin-right: 20px;
+}
+.rightPanelTd:nth-child(2) {
+    text-align: left;
+    margin-left: 10px;
 }
 #rPHeader {
     padding: 1rem;
