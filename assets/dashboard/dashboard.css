@@ -250,7 +250,7 @@ body {
 }
 [data-target] {
     padding-left: 10px;
-    width: 80%;
+    width: 90%;
     border-radius: 6px;
 }
 [data-target].active {
@@ -328,6 +328,7 @@ body {
     text-align: center;
 }
 .rightPanelTr {
+    margin-bottom: 5px;
 }
 .rightPanelTd:nth-child(1) {
     width: 8rem;

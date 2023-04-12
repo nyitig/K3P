@@ -239,6 +239,7 @@ return
 // groups sorter
 
 function groupsSorter(obj,actIndex) {
+  // TODO DR id-s tree create
   let newlevel=level+1
   if (obj.length==0) {
     if (groupsTree[newlevel]!=undefined) {
@@ -479,7 +480,7 @@ function createRightPanelDOM() {
   let spanEnd=`</span>`
   let tableBegin=`<div class="rightPanelTableTag">`
   let tableEnd=`</div>`
-  let trBegin=`<div class="rightPanelTr row">`
+  let trBegin=`<div class="rightPanelTr alItCent  row">`
   let trEnd=`</div>`
   let tdBegin=`<div class="rightPanelTd">`
   let tdEnd=`</div>`
@@ -509,6 +510,31 @@ function createRightPanelDOM() {
         rightPanelTemplate+=trBegin
         rightPanelTemplate+=tdBegin+"Notes: "+tdEnd
         rightPanelTemplate+=tdBegin+entriesData.notes+tdEnd
+        rightPanelTemplate+=trEnd
+        rightPanelTemplate+=trBegin
+        rightPanelTemplate+=tdBegin+"Creation: "+tdEnd
+        let timeData=entriesData.times.cretionTime
+        rightPanelTemplate+=tdBegin+dateConvertToReadableDate(timeData)+tdEnd
+        rightPanelTemplate+=trEnd
+        rightPanelTemplate+=trBegin
+        rightPanelTemplate+=tdBegin+"Expiry: "+tdEnd
+        timeData=entriesData.times.expiryTime
+        rightPanelTemplate+=tdBegin+dateConvertToReadableDate(timeData)+tdEnd
+        rightPanelTemplate+=trEnd
+        rightPanelTemplate+=trBegin
+        rightPanelTemplate+=tdBegin+"Last access: "+tdEnd
+        timeData=entriesData.times.lastAccessTime
+        rightPanelTemplate+=tdBegin+dateConvertToReadableDate(timeData)+tdEnd
+        rightPanelTemplate+=trEnd
+        rightPanelTemplate+=trBegin
+        rightPanelTemplate+=tdBegin+"Last modification: "+tdEnd
+        timeData=entriesData.times.lastModificationTime
+        rightPanelTemplate+=tdBegin+dateConvertToReadableDate(timeData)+tdEnd
+        rightPanelTemplate+=trEnd
+        rightPanelTemplate+=trBegin
+        rightPanelTemplate+=tdBegin+"Loaction changed: "+tdEnd
+        timeData=entriesData.times.locationChanged
+        rightPanelTemplate+=tdBegin+dateConvertToReadableDate(timeData)+tdEnd
         rightPanelTemplate+=trEnd
         rightPanelTemplate+=tableEnd+divEndTag
         rightPanel.innerHTML+=rightPanelTemplate
@@ -546,4 +572,13 @@ function showHideEntries() {
     })    
   }
   return
+}
+
+// date convers functions
+
+function dateConvertToReadableDate(dateTime) {
+  let msTime=dateTime
+  let time= new Date().getTime(msTime)
+  let date= new Date(time)
+  return date.toString()
 }
