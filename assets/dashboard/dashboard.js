@@ -60,7 +60,9 @@ let groupsTree=[]
 let groupsNameTree=[]
 let iconIdsTree=[]
 let liIndexArr=[]
-
+let dRtargetIndexTree=[[""]]
+let dRtargetTree=[[""]]
+let dRarryaTree=[[""]]
 // entries array
 let entriesTree=[]
 let entriesTreeIdsArr=[]
@@ -119,18 +121,16 @@ function startDisplay() {
      loadLeftPanel()
     loadCenterPanel()
     loadRightPanel()
+    // createDRTargetTree()
     showHideFullPageSect()
+    createDRTargetTree()
    return
   }
 
 }
 
 function displayKdbxObj(actObj,actIndex) {
-    //  debugger
-    
-    // itt mindig az aktuális objektum van
   if (actObj[actIndex].uuid!=undefined) {
-    // leftPanelTemplate+=`<li id="" class="" data-target="level${level}Index${actIndex}">`
      sorterKdbx(actObj,actIndex)
     return
   }
@@ -203,7 +203,6 @@ return
 // entries sorter
 
 function entriesSorter(obj,actIndex) {
-  //  debugger
 // itt az aktuális entries-eket kapom meg. 
 if (obj.length==0) {
   if (entriesTree[level]!=undefined) {
@@ -239,7 +238,7 @@ return
 // groups sorter
 
 function groupsSorter(obj,actIndex) {
-  // TODO DR id-s tree create
+  // TODO DR id-s tree create?
   let newlevel=level+1
   if (obj.length==0) {
     if (groupsTree[newlevel]!=undefined) {
@@ -247,14 +246,16 @@ function groupsSorter(obj,actIndex) {
       let text="none"
       groupsTree[newlevel][actObjLenght]={text}
       idsTree[newlevel][actObjLenght]=text
+      dRtargetIndexTree[newlevel][actObjLenght]=text
     }
     if (groupsTree[newlevel]==undefined) {
       groupsTree[newlevel]=[]
       let text="none"
       groupsTree[newlevel][0]={text}
       idsTree[newlevel]=[]
-      
+      dRtargetIndexTree[newlevel]=[]
       idsTree[newlevel][0]=text
+      dRtargetIndexTree[newlevel][0]=text
     }
     if (liIndexArr[newlevel]==undefined) {
       liIndexArr[newlevel]=[]
@@ -270,6 +271,7 @@ function groupsSorter(obj,actIndex) {
         groupsTree[newlevel][actObjLenght]=obj[i]
         let text="lev"+level+"ind"+actIndex
         idsTree[newlevel][actObjLenght]=text
+        dRtargetIndexTree[newlevel][actObjLenght]=actIndex
         actObjLenght++
     }
     }else  {
@@ -280,10 +282,12 @@ function groupsSorter(obj,actIndex) {
     groupsTree[newlevel]=[]
     groupsTree[newlevel]=obj
     idsTree[newlevel]=[]
+    dRtargetIndexTree[newlevel]=[]
     liIndexArr[newlevel]=[obj.length]
     for (let i=0; i< obj.length; i++) {
       let text=`lev${level}ind${actIndex}`
       idsTree[newlevel][i]=text
+      dRtargetIndexTree[newlevel][i]=actIndex
     }
     return
   }
@@ -294,14 +298,14 @@ function groupsSorter(obj,actIndex) {
 
 // create elemIdsArray
 
-function createElemIdsArray() {
-  for (let a = 1; a < idsTree.length; a++) {
-    if (elemidsArray[a]==undefined) {
-      elemidsArray[a]=[]
+function createElemIdsArray(treeArray,elemArray) {
+  for (let a = 1; a < treeArray.length; a++) {
+    if (elemArray[a]==undefined) {
+      elemArray[a]=[]
     }
-    for (let it of idsTree[a]) {
-      if (elemidsArray[a].indexOf(it)===-1) {
-        elemidsArray[a].push(it)
+    for (let it of treeArray[a]) {
+      if (elemArray[a].indexOf(it)===-1) {
+        elemArray[a].push(it)
       }
     }
   }
@@ -310,7 +314,7 @@ function createElemIdsArray() {
 // left panel load
 
 function loadLeftPanel() {
- createElemIdsArray()
+ createElemIdsArray(idsTree,elemidsArray)
   createLeftPanelDom()
   return
 }
@@ -581,4 +585,67 @@ function dateConvertToReadableDate(dateTime) {
   let time= new Date().getTime(msTime)
   let date= new Date(time)
   return date.toString()
+}
+
+// DR target tree create
+
+function createDRTargetTree() {
+  /*
+  Mit is kell csinálni?
+  - ezt is meg kellene szűrni elsőnek, h lássuk, h milyen elemek vannak benne
+  */ 
+  createElemIdsArray(dRtargetIndexTree,dRtargetTree)
+  for (let i = 1; i < dRtargetTree.length; i++) {
+    for (let y = 0; y < dRtargetTree[i].length; y++) {
+      let searchIndex=dRtargetTree[i][y]
+      let drValue=dRarryaTree[i-1][searchIndex]
+      let target=0
+      //TODo Az idsTree és a drArray 4. lev sorrendben nem egyezik meg Miért???? A többi rendben van  :)
+        for (let b = 0; b < dRtargetIndexTree[i].length; b++) {
+          let actualIndex=dRtargetIndexTree[i][b]
+          if (searchIndex==actualIndex) {
+
+            if (dRtargetIndexTree[i][b]=="none") {  
+              if (dRarryaTree[i]!=undefined) {
+                let lenghtIndex=dRarryaTree[i].length
+                dRarryaTree[i][lenghtIndex]="none"
+              } 
+               if (dRarryaTree[i]==undefined) {
+                dRarryaTree[i]=[]                
+                dRarryaTree[i][0]="none"
+               }          
+            }
+            if (dRtargetIndexTree[i][b]!="none") {
+              if (dRarryaTree[i]!=undefined) {
+                let lenghtIndex=dRarryaTree[i].length
+                if (target!=0) {
+                  drValue+="R" 
+                  dRarryaTree[i][lenghtIndex]=drValue
+                  target++
+                }
+                if (target==0) {
+                  drValue+="D" 
+                  dRarryaTree[i][lenghtIndex]=drValue
+                  target++
+                }
+
+              }
+              if (dRarryaTree[i]==undefined) {
+                dRarryaTree[i]=[] 
+                drValue+="D"               
+                dRarryaTree[i][0]=drValue
+                target++
+              }
+            }
+          }
+
+          
+        }
+        
+      
+      
+    }
+   
+    
+  }
 }
