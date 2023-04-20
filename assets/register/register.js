@@ -83,7 +83,7 @@ function differentPasswords() {
 
 async function registerSendData() {
     console.log("async registerSendData fut")
-    const url='http://127.0.0.1:9933/api/account'
+     const url='http://127.0.0.1:9933/api/account'
      let userData={
      "firstNameDto": `${dataArr[0]}`,
      "lastNameDto": `${dataArr[1]}`,

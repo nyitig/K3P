@@ -2129,9 +2129,9 @@ const kdbxObj={
 }
 const kdbxTemp={}
 
-sessionStorage.setItem("kdbx", JSON.stringify(kdbxObj))
-/*
+// sessionStorage.setItem("kdbx", JSON.stringify(kdbxObj))
+
 if (sessionStorage.kdbx==undefined) {
-  
+    sessionStorage.setItem("kdbx", JSON.stringify(kdbxObj))
 }
-*/
+

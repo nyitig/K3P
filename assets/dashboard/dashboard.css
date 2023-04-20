@@ -251,17 +251,57 @@ body {
 [data-target] {
     padding-left: 10px;
     width: 90%;
-    border-radius: 6px;
+    border-radius: 6px 6px 0px 0px;
 }
 [data-target].active {
     background-color: var(--bgdColor);
 }
+.beginEnd {
+    max-height: 0px;
+    overflow: hidden;
+    opacity: 0;
+}
+.beginEnd.active {
+    position: relative;
+    z-index: 2;
+    max-height: 40px;
+    opacity: 1;
+}
+.groupsTools {
+    padding: 5px;
+    width: 90%;
+    border-radius:0px 0px 6px 6px;
+    max-height: 0px;
+    overflow: hidden;
+    opacity: 0;
+}
+.groupToolsBtn {
+    padding: 4px 6px;
+}
+.groupToolsBtn:hover {
+    background-color: rgba(91, 165, 201, 0.3);
+    border-radius: 4px;
+}
+.groupsTools.active {
+    background-color: var(--bgdColor);
+    max-height: 50px;
+    opacity: 1;
+}
+.imgConstruct {
+    width: 30px;
+    height: 30px;
+    padding-right: 10px;
+}
 /* centerPanel */
 #centerPanel {
+    overflow: hidden;
     height: 100vh;
-    width: 30%;
+    width: 0%;
     background-color: var(--bgdColor);
     border-right: 3px solid var(--white);
+}
+#centerPanel.active {
+    width: 30%;
 }
 .centerPanelDiv {
     position: absolute;
@@ -299,8 +339,12 @@ body {
 /* rightPanel */
 #rightPanel {
     height: 100vh;
-    width: 50%;
+    width: 0%;
+    overflow: hidden;
     background-color: var(--bgdColor);
+}
+#rightPanel.active {
+    width: 50%;
 }
 .rightPanelDiv {
     position: absolute;
@@ -358,6 +402,20 @@ input {
     outline: none;
     /* border-bottom: 2px solid var(--btnColor); */
  }
+
+/* input panel */
+
+#inputPanel {
+    width: 0%;
+    height: 100vh;
+    background-color: var(--bgdColor);
+    border-right: 3px solid var(--white);
+
+}
+#inputPanel.active {
+    width: 80%;
+}
+
 
 /* menu styles */
 

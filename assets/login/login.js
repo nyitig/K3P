@@ -60,7 +60,7 @@ function inputsCheck() {
 }
 
 function createLoginData() {
-    const url="http://127.0.0.1:9933/api/jwt-login"
+     const url="http://127.0.0.1:9933/api/jwt-login"
     const user = {
         "emailDto" : `${loginDataArr[0]}`,
         "passwordDto": `${loginDataArr[1]}`
@@ -72,15 +72,39 @@ function createLoginData() {
             'Content-Type': 'application/json'
         }
     }
-    sendDatas(url, options)
-    .then(results =>{
-        let keyName="user"
-        resultsCheck(results,keyName)})
-    .then(results =>{getKdbxJsonStart()})
+    let statusNetwork=navigator.onLine ? "Online":"OFFline"
+    if (statusNetwork=="Online") {
+        sendDatas(url, options)
+        .then(results =>{
+            if (checkOk) {
+                let keyName="user"
+                resultsCheck(results,keyName)
+                .then(results=>{getKdbxJsonStart()})
+            } 
+            if (!checkOk) {
+                const welcomme=document.getElementById('welcomme')
+                welcomme.innerHTML=results
+                welcomme.classList.add('active')
+                setTimeout(() => {
+                    welcomme.classList.remove('active')
+                    welcomme.innerHTML=""
+                }, 2000);
+            }
+            }
+        )
+    }
+
 }
 async function sendDatas(url, options) {
-    const response= await fetch(url,options)
+    try {
+         const response= await fetch(url,options)
     return response.json()
+    } catch (error) {
+        let errorText="Error: "+error
+        checkOk=false
+        return errorText
+    }
+   
 }
 async function resultsCheck(results,keyName) {
     checkOk=false
@@ -106,7 +130,7 @@ async function resultsCheck(results,keyName) {
 }
 
 function getKdbxJsonStart() {
-    const url="http://127.0.0.1:9933/api/kdbx/1/groups/get-top-group"
+     const url="http://127.0.0.1:9933/api/kdbx/1/groups/get-top-group"
     const userLoginDatas=JSON.parse(sessionStorage.user)
     const jwtToken=userLoginDatas.jwtToken
     // Ez vszínű nem kell majd az új verziónál
@@ -115,7 +139,7 @@ function getKdbxJsonStart() {
     }
     const options= {
         method:'POST',
-        body:JSON.stringify(user),
+         body:JSON.stringify(user),
         headers: {
             'Content-Type': 'application/json',
             'Accept' : 'application/json',

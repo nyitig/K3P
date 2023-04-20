@@ -60,13 +60,15 @@ const fullaPageTemplate=`
 <section id="leftPanel" class="column ">
 
  </section>
- <section id="centerPanel" class="column ">
+ <section id="centerPanel" class="column active">
 
  </section>
- <section id="rightPanel" class="column">
+ <section id="rightPanel" class="column active">
 
  </section>
-
+ <section id="inputPanel" class="column ">
+    <h2>Ez az input section</h2>
+ </section>
 </main>
 
 `

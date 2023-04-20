@@ -49,8 +49,8 @@ function clearMainPanels() {
 /*
 Mit is kellene csinálni?
 - groups a #leftPanelben jelennének meg => ez készen van
-- entries a #centerPanelben jelennének meg
-- entries összes tulajdonsága pedig a #rightPanelben
+- entries a #centerPanelben jelennének meg => ez is készen van
+- entries összes tulajdonsága pedig a #rightPanelben => ez is készen van
 */
 
 let kdbxObject=JSON.parse(sessionStorage.kdbx)
@@ -60,6 +60,8 @@ let groupsTree=[]
 let groupsNameTree=[]
 let iconIdsTree=[]
 let liIndexArr=[]
+let targetDRKeys={}
+let dataTargetArray=[]
 let dRtargetIndexTree=[[""]]
 let dRtargetTree=[[""]]
 let dRarryaTree=[[""]]
@@ -105,7 +107,7 @@ liIndexArr[0]=[1]
 groupsTree[level][indexKdbx]=kdbxObject
 
 startDisplay()
-
+// const dataTarget=document.querySelectorAll('[data-target]')
 function startDisplay() {
   for (let i = 0; i < groupsTree[level].length; i++) { 
     let actObj=groupsTree[level]
@@ -117,13 +119,14 @@ function startDisplay() {
 
     startDisplay()
   }else {
-    // debugger
      loadLeftPanel()
     loadCenterPanel()
     loadRightPanel()
-    // createDRTargetTree()
-    showHideFullPageSect()
     createDRTargetTree()
+    createDataTargerDataDrKeysPairs()
+    showHideFullPageSect()
+    groupMenuToolsOpenClose()
+    inputSectionShow()
    return
   }
 
@@ -238,19 +241,19 @@ return
 // groups sorter
 
 function groupsSorter(obj,actIndex) {
-  // TODO DR id-s tree create?
+
   let newlevel=level+1
   if (obj.length==0) {
     if (groupsTree[newlevel]!=undefined) {
       let actObjLenght=groupsTree[newlevel].length
-      let text="none"
+      let text=`none${actIndex}`
       groupsTree[newlevel][actObjLenght]={text}
       idsTree[newlevel][actObjLenght]=text
       dRtargetIndexTree[newlevel][actObjLenght]=text
     }
     if (groupsTree[newlevel]==undefined) {
       groupsTree[newlevel]=[]
-      let text="none"
+      let text=`none${actIndex}`
       groupsTree[newlevel][0]={text}
       idsTree[newlevel]=[]
       dRtargetIndexTree[newlevel]=[]
@@ -326,45 +329,82 @@ function createLeftPanelDom() {
    let imgBegin=`<img class="imgLeftPanel svgImgBrown" src=`
    let imgCenter=` alt="" width="30" height="30"`
    let dataTarget=` data-target=`
-   let liBeginTag=`<li class="liLeftPanel" id=`
+   let liBeginTag=`<li class="liLeftPanel column" id=`
    let tagEnd=`>`
    let liEndTag=`</li>`
    let olEndTag=`</ol>`
    let spanBegin=`<span>`
    let spanEnd=`</span>`
-   let divBegin=`<div class="row alItCent"`
+   let divBegin=`<div class="row alItCent justySpBw"`
+   let divBeginCent=`<div class="row alItCent"`
+   let divBeginEnd=`<div class="row alItCent beginEnd"`
+   let imgConstruct=`<img class="svgImgBrown imgConstruct" src="/assets/pic/construct-outline.svg" alt="" width="30" height="30">`
    let divEnd=`</div>`
+   let toolsContainer=`    
+  <div class="groupsTools row  justySpEv alItCent">
+    <div class="groupsAdd groupToolsBtn">Add</div>
+    <div class="groupsEdit groupToolsBtn">Edit</div>
+    <div class="groupsMove groupToolsBtn">Move</div>
+    <div class="groupsDelete groupToolsBtn">Delete</div>
+  </div>  `
    let gropNameTreeIndex=0
  for (let asd = 0; asd < elemidsArray.length; asd++) {
   gropNameTreeIndex=0
   for (let i = 0; i < elemidsArray[asd].length; i++) {
     let tagId=elemidsArray[asd][i]
-    if (tagId!="none") {
-          let elem=document.getElementById(tagId)
-    let leftPanelTemplate=``
-    leftPanelTemplate+=olBeginTag+tagEnd
-    for (let y = 0; y < idsTree[asd].length; y++) {
-      if (elemidsArray[asd][i]==idsTree[asd][y] && elemidsArray[asd][i]!="none") {
-        let iconIdsNumber=iconIdsTree[asd][gropNameTreeIndex]
-        let imgSrc=iconIdsSrcObj[iconIdsNumber]
-        let liIds=`lev${asd}ind${y}`
-        if (entriesTreeIdsArr[asd]!=undefined) {
-          let index2=entriesTreeIdsArr[asd].length
-          entriesTreeIdsArr[asd][index2]=liIds
-        }
-        if (entriesTreeIdsArr[asd]==undefined) {
-          entriesTreeIdsArr[asd]=[]
-          entriesTreeIdsArr[asd][0]=liIds
-        }
-        leftPanelTemplate+=liBeginTag+liIds+tagEnd+divBegin+dataTarget+liIds+tagEnd+imgBegin+imgSrc+imgCenter+tagEnd+spanBegin+groupsNameTree[asd][gropNameTreeIndex]+spanEnd+divEnd
-        gropNameTreeIndex++
+    let querryIndex=tagId.slice(0, 4) // ha none lesz, akkor nem kell beépíteni, de a dataTarget tömbbe meg mindkettőnek be kell kerülnie :)
+    
+    if (querryIndex=='none') {
+      if (dataTargetArray[asd]!=undefined) {
+        let drTargetArrIndex=dataTargetArray[asd].length
+        dataTargetArray[asd][drTargetArrIndex]=tagId
+      }
+      if (dataTargetArray[asd]==undefined) {
+        dataTargetArray[asd]=[]
+        dataTargetArray[asd][0]=tagId
       }
     }
-    leftPanelTemplate+=liEndTag+olEndTag
-    elem.innerHTML+=leftPanelTemplate
+    if (querryIndex!="none") {
+      let elem=document.getElementById(tagId)
+      let leftPanelTemplate=``
+      leftPanelTemplate+=olBeginTag+tagEnd
+      for (let y = 0; y < idsTree[asd].length; y++) {
+        if (elemidsArray[asd][i]==idsTree[asd][y] && elemidsArray[asd][i]!=querryIndex) {
+          let iconIdsNumber=iconIdsTree[asd][gropNameTreeIndex]
+          let imgSrc=iconIdsSrcObj[iconIdsNumber]
+          let liIds=`lev${asd}ind${y}`
+          if (entriesTreeIdsArr[asd]!=undefined) {
+            let index2=entriesTreeIdsArr[asd].length
+            entriesTreeIdsArr[asd][index2]=liIds
+          }
+          if (entriesTreeIdsArr[asd]==undefined) {
+            entriesTreeIdsArr[asd]=[]
+            entriesTreeIdsArr[asd][0]=liIds
+          }
+          leftPanelTemplate+=liBeginTag+liIds+tagEnd+divBegin+dataTarget+liIds+tagEnd+divBeginCent+tagEnd+imgBegin+imgSrc+imgCenter+tagEnd
+          leftPanelTemplate+=spanBegin+groupsNameTree[asd][gropNameTreeIndex]+spanEnd+divEnd
+          leftPanelTemplate+=divBeginEnd+tagEnd+imgConstruct+divEnd+divEnd
+          leftPanelTemplate+=toolsContainer
+          gropNameTreeIndex++
+        }
+
+        if (dataTargetArray[asd]!=undefined && elemidsArray[asd][i]==idsTree[asd][y])  {
+          let drTargetArrIndex=dataTargetArray[asd].length
+          let drIds=`lev${asd}ind${y}`
+          dataTargetArray[asd][drTargetArrIndex]=drIds
+        }
+        if (dataTargetArray[asd]==undefined && elemidsArray[asd][i]==idsTree[asd][y])  {
+          dataTargetArray[asd]=[]
+          let drIds=`lev${asd}ind${y}`
+          dataTargetArray[asd][0]=drIds
+        }
+                
+      }
+      leftPanelTemplate+=liEndTag+olEndTag
+      elem.innerHTML+=leftPanelTemplate
+      }
     }
-  }
- } 
+  } 
  }
 
 /* CENTER PANEL CREATE FUNCTIONS*/  
@@ -420,23 +460,27 @@ function createCenterPanelDom() {
 //  group  & this entries active
 
 function activatedGroupEntries() {
+  const groupsTools=document.querySelectorAll('.groupsTools')
   const dataTarget=document.querySelectorAll('[data-target]')
   const dataGroupIds=document.querySelectorAll('[data-groupIds]')
   const dataEntries=document.querySelectorAll('[data-entries]')
   const dataEntriesId=document.querySelectorAll('[data-entriesId]')
+  const beginEnd=document.querySelectorAll('.beginEnd')
   for (let i = 0; i < dataTarget.length; i++) {
     dataTarget[i].addEventListener('click',()=>{
-      // debugger
-      // classlist 
+      inputSectionHide()
       for (let y = 0; y < dataTarget.length; y++) {
         // add clicked div active class, remove other div class
         if (i==y) {
           if (!dataTarget[y].classList.contains('active')) {
             dataTarget[y].classList.add('active')
+            beginEnd[y].classList.add('active')              
           }
         }
         if (i!=y) {
           dataTarget[y].classList.remove('active')
+          beginEnd[y].classList.remove('active')
+          groupsTools[y].classList.remove('active')
         }
         // show, hide entries
         let dataTargetValue=dataTarget[i].attributes[1].value
@@ -592,60 +636,159 @@ function dateConvertToReadableDate(dateTime) {
 function createDRTargetTree() {
   /*
   Mit is kell csinálni?
-  - ezt is meg kellene szűrni elsőnek, h lássuk, h milyen elemek vannak benne
+  -  első szűrés: none vagy nem none 
+    - ha nem none == egy number az, akkor az ahhoz tartozó indexűek megkapják:-  vagy a +D (0. elem), vagy  a +R (már legalább 1 ilyen elem letárolásra került)
+    - ha none== string akkor az azonos strig kerül letároásra. 
   */ 
   createElemIdsArray(dRtargetIndexTree,dRtargetTree)
   for (let i = 1; i < dRtargetTree.length; i++) {
     for (let y = 0; y < dRtargetTree[i].length; y++) {
       let searchIndex=dRtargetTree[i][y]
-      let drValue=dRarryaTree[i-1][searchIndex]
       let target=0
-      //TODo Az idsTree és a drArray 4. lev sorrendben nem egyezik meg Miért???? A többi rendben van  :)
+      if (typeof(searchIndex)=="number") {
+        let drValue=dRarryaTree[i-1][searchIndex]
+        // ide akkor jövök be, ha indexet kapok
         for (let b = 0; b < dRtargetIndexTree[i].length; b++) {
           let actualIndex=dRtargetIndexTree[i][b]
           if (searchIndex==actualIndex) {
-
-            if (dRtargetIndexTree[i][b]=="none") {  
-              if (dRarryaTree[i]!=undefined) {
-                let lenghtIndex=dRarryaTree[i].length
-                dRarryaTree[i][lenghtIndex]="none"
-              } 
-               if (dRarryaTree[i]==undefined) {
-                dRarryaTree[i]=[]                
-                dRarryaTree[i][0]="none"
-               }          
-            }
-            if (dRtargetIndexTree[i][b]!="none") {
-              if (dRarryaTree[i]!=undefined) {
-                let lenghtIndex=dRarryaTree[i].length
-                if (target!=0) {
-                  drValue+="R" 
-                  dRarryaTree[i][lenghtIndex]=drValue
-                  target++
-                }
-                if (target==0) {
-                  drValue+="D" 
-                  dRarryaTree[i][lenghtIndex]=drValue
-                  target++
-                }
-
+            if (dRarryaTree[i]!=undefined) {
+              let lenghtIndex=dRarryaTree[i].length
+              if (target!=0) {
+                drValue+="R" 
+                dRarryaTree[i][lenghtIndex]=drValue
+                target++
               }
-              if (dRarryaTree[i]==undefined) {
-                dRarryaTree[i]=[] 
-                drValue+="D"               
-                dRarryaTree[i][0]=drValue
+              if (target==0) {
+                drValue+="D" 
+                dRarryaTree[i][lenghtIndex]=drValue
                 target++
               }
             }
+            if (dRarryaTree[i]==undefined) {
+              dRarryaTree[i]=[] 
+              drValue+="D"               
+              dRarryaTree[i][0]=drValue
+              target++
+            }
           }
-
-          
         }
-        
-      
-      
-    }
-   
-    
+      }
+      if (typeof(searchIndex)=="string") {
+      // Ide akkor jövök be, ha "none*" az érték.
+        for (let c = 0; c < dRtargetIndexTree[i].length; c++) {
+          let actualIndex=dRtargetIndexTree[i][c]
+
+          if (searchIndex==actualIndex) {
+            if (dRarryaTree[i]!=undefined) {
+              let lenghtIndex=dRarryaTree[i].length
+              dRarryaTree[i][lenghtIndex]=actualIndex
+            }
+            if (dRarryaTree[i]==undefined) {
+              dRarryaTree[i]=[] 
+              dRarryaTree[i][0]=actualIndex
+            }
+          }          
+        }
+      }
+      /*
+      TODO Az idsTree és a drArray 4. lev sorrendben nem egyezik meg Miért???? A többi rendben van Ok: a none nem egyedi, így ha a level
+       sorban "foghíjasan szerepelnek az azonosítók, akkor fordul ez elő. Megoldás:  most már egyediek a none-k is. De ez lenne amegoldás??? :)
+       Mit is kell csinálni?
+      ha none-t talál, akkor aza dott indexbe írja be az adott értéket, ha nem none, akkor mehet ami volt is. 
+      a dRtargetIndexTree tartalmazza a teljes sort. 
+       */
+         for (let b = 0; b < dRtargetIndexTree[i].length; b++) {
+           let actualIndex=dRtargetIndexTree[i][b]
+           let actualIndexNoneText=""
+           if (actualIndex.length>3) {
+             actualIndexNoneText=actualIndexNoneText.slice(0,3)
+           }
+         }                    
+    }      
   }
+}
+
+// create enum data-target:dRArray
+
+function createDataTargerDataDrKeysPairs() {
+  // dataTargetArray dRarryaTree targetDRKeys
+  for (let i = 0; i < dataTargetArray.length; i++) {
+    for (let y = 0; y < dataTargetArray[i].length; y++) {
+      let ala=dataTargetArray[i][y].toString() 
+      let value=dRarryaTree[i][y].toString() 
+      targetDRKeys[ala]=value      
+    }    
+  }
+}
+
+// menu tools
+
+function groupMenuToolsOpenClose() {
+  console.log("groupMenuToolsOpenClose fut")
+  const beginEnd=document.querySelectorAll('.beginEnd')
+  const groupsTools=document.querySelectorAll('.groupsTools')
+  for (let i = 0; i < beginEnd.length; i++) {
+    beginEnd[i].addEventListener("click",()=>{
+      inputSectionHide()
+      for (let y = 0; y < groupsTools.length; y++) {
+        if (y==i) {
+          groupsTools[y].classList.toggle('active')
+        }
+        if (y!=i) {
+          groupsTools[y].classList.remove('active')
+        }        
+      }
+    })    
+  }
+}
+function inputSectionShow() {
+  const groupToolsBtn=document.querySelectorAll('.groupToolsBtn')
+  const centerPanel=document.getElementById('centerPanel')
+  const rightPanel=document.getElementById('rightPanel')
+  const inputPanel=document.getElementById('inputPanel')
+  const centerPanelDiv=document.querySelectorAll('.centerPanelDiv')
+  for (let i = 0; i < groupToolsBtn.length; i++) {
+    groupToolsBtn[i].addEventListener("click",()=>{
+      // debugger
+      centerPanel.classList.remove('active')
+      rightPanel.classList.remove('active')
+      inputPanel.classList.add('active')
+      for (let y = 0; y < centerPanelDiv.length; y++) {
+        centerPanelDiv[y].classList.remove('active')        
+      }
+    })        
+  }  
+}
+
+function inputSectionHide() {
+  const centerPanel=document.getElementById('centerPanel')
+  const rightPanel=document.getElementById('rightPanel')
+  const inputPanel=document.getElementById('inputPanel')
+  inputPanel.classList.remove('active')
+  centerPanel.classList.add('active')
+  rightPanel.classList.add('active')
+}
+
+/*GROUP ACTIONS*/ 
+
+//Add new group
+
+function addNewGroup() {
+  /*
+  Ezek  a paraméterek kellenek:
+  "kdbxFileDto":
+    {
+        "kdbxFilePwDto": "1"
+    },
+    
+    "groupDto":
+    {
+        "expiresDto": "",
+        "groupExpiryTimeDto": "",
+        
+        "targetGroupDirectionDto": "DRRRR",
+        "groupNameDto": "IT First"
+    }
+}
+  */ 
 }
