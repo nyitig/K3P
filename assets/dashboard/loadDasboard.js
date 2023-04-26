@@ -69,6 +69,9 @@ const fullaPageTemplate=`
  <section id="inputPanel" class="column ">
     <h2>Ez az input section</h2>
  </section>
+ <section id="wrongPanel" class="column alItCent">
+
+ </section>
 </main>
 
 `

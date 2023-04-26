@@ -29,7 +29,7 @@ return
 
 function showHideFullPageSect() {
   const fullPageSect=document.getElementById('fullPageSect')
-  fullPageSect.classList.toggle('active')
+  fullPageSect.classList.add('active')
   return
 }
 
@@ -39,10 +39,46 @@ function clearMainPanels() {
   const leftPanel=document.getElementById('leftPanel')
   const centerPanel=document.getElementById('centerPanel')
   const rightPanel=document.getElementById('rightPanel')
+  const inputPanel=document.getElementById('inputPanel')
+  const wrongPanel=document.getElementById('wrongPanel')
   leftPanel.innerHTML=""
   centerPanel.innerHTML=""
   rightPanel.innerHTML=""
+  inputPanel.innerHTML=""
+  wrongPanel.innerHTML=""
+  centerPanel.classList.add('active')
+  rightPanel.classList.add('active')
+  inputPanel.classList.remove('active')
+  wrongPanel.classList.remove('active')
   return
+}
+
+function allParamDefault() {
+  // new kdbx Json load
+  kdbxObject=JSON.parse(sessionStorage.kdbx)
+  // all array and object load default value
+  idsTree=[["leftPanel"]]
+  elemidsArray=[["leftPanel"]]
+  groupsTree=[]
+  groupsNameTree=[]
+  iconIdsTree=[]
+  liIndexArr=[]
+  targetDRKeys={}
+  targetNameKeys={}
+  dataTargetArray=[]
+  dRtargetIndexTree=[[""]]
+  dRtargetTree=[[""]]
+  dRarryaTree=[[""]]
+  // entries array
+  entriesTree=[]
+  entriesTreeIdsArr=[]
+
+  // all parameter load default value
+  level=0
+  indexKdbx=0
+  groupsTree[level]=[]
+  liIndexArr[0]=[1]
+  groupsTree[level][indexKdbx]=kdbxObject
 }
 
 /*loading kdbx into main*/ 
@@ -61,6 +97,7 @@ let groupsNameTree=[]
 let iconIdsTree=[]
 let liIndexArr=[]
 let targetDRKeys={}
+let targetNameKeys={}
 let dataTargetArray=[]
 let dRtargetIndexTree=[[""]]
 let dRtargetTree=[[""]]
@@ -124,9 +161,11 @@ function startDisplay() {
     loadRightPanel()
     createDRTargetTree()
     createDataTargerDataDrKeysPairs()
+    createDatatargetGroupNameKeypairs()
     showHideFullPageSect()
     groupMenuToolsOpenClose()
-    inputSectionShow()
+    groupActionBtnActivated()
+    // inputSectionShow()
    return
   }
 
@@ -340,13 +379,16 @@ function createLeftPanelDom() {
    let divBeginEnd=`<div class="row alItCent beginEnd"`
    let imgConstruct=`<img class="svgImgBrown imgConstruct" src="/assets/pic/construct-outline.svg" alt="" width="30" height="30">`
    let divEnd=`</div>`
-   let toolsContainer=`    
-  <div class="groupsTools row  justySpEv alItCent">
-    <div class="groupsAdd groupToolsBtn">Add</div>
-    <div class="groupsEdit groupToolsBtn">Edit</div>
-    <div class="groupsMove groupToolsBtn">Move</div>
-    <div class="groupsDelete groupToolsBtn">Delete</div>
-  </div>  `
+   let toolsContainerBegin=`<div class="groupsTools row  justySpEv alItCent">`
+  let dataDR=`data-dr="`
+  let addBtnBegin=`<div class="groupsAdd groupToolsBtn" `
+  let addEnd=`" >Add</div>`
+  let editBtnBegin=` <div class="groupsEdit groupToolsBtn" `
+  let editEnd=`" >Edit</div>`
+  let moveBtnBegin=`<div class="groupsMove groupToolsBtn" `
+  let moveEnd=`" >Move</div>`
+  let deleteBtnBegin=`<div class="groupsDelete groupToolsBtn" `
+  let deleteEnd=`"  >Delete</div>`
    let gropNameTreeIndex=0
  for (let asd = 0; asd < elemidsArray.length; asd++) {
   gropNameTreeIndex=0
@@ -384,7 +426,12 @@ function createLeftPanelDom() {
           leftPanelTemplate+=liBeginTag+liIds+tagEnd+divBegin+dataTarget+liIds+tagEnd+divBeginCent+tagEnd+imgBegin+imgSrc+imgCenter+tagEnd
           leftPanelTemplate+=spanBegin+groupsNameTree[asd][gropNameTreeIndex]+spanEnd+divEnd
           leftPanelTemplate+=divBeginEnd+tagEnd+imgConstruct+divEnd+divEnd
-          leftPanelTemplate+=toolsContainer
+          leftPanelTemplate+=toolsContainerBegin
+          leftPanelTemplate+=addBtnBegin+dataDR+liIds+addEnd //add Btn
+          leftPanelTemplate+=editBtnBegin+dataDR+liIds+editEnd //edit btn
+          leftPanelTemplate+=moveBtnBegin+dataDR+liIds+moveEnd // move btn
+          leftPanelTemplate+=deleteBtnBegin+dataDR+liIds+deleteEnd //delete btn
+          leftPanelTemplate+=divEnd
           gropNameTreeIndex++
         }
 
@@ -405,6 +452,7 @@ function createLeftPanelDom() {
       }
     }
   } 
+  return
  }
 
 /* CENTER PANEL CREATE FUNCTIONS*/  
@@ -559,37 +607,37 @@ function createRightPanelDOM() {
         rightPanelTemplate+=tdBegin+"Notes: "+tdEnd
         rightPanelTemplate+=tdBegin+entriesData.notes+tdEnd
         rightPanelTemplate+=trEnd
-        rightPanelTemplate+=trBegin
-        rightPanelTemplate+=tdBegin+"Creation: "+tdEnd
-        let timeData=entriesData.times.cretionTime
-        rightPanelTemplate+=tdBegin+dateConvertToReadableDate(timeData)+tdEnd
-        rightPanelTemplate+=trEnd
-        rightPanelTemplate+=trBegin
-        rightPanelTemplate+=tdBegin+"Expiry: "+tdEnd
-        timeData=entriesData.times.expiryTime
-        rightPanelTemplate+=tdBegin+dateConvertToReadableDate(timeData)+tdEnd
-        rightPanelTemplate+=trEnd
-        rightPanelTemplate+=trBegin
-        rightPanelTemplate+=tdBegin+"Last access: "+tdEnd
-        timeData=entriesData.times.lastAccessTime
-        rightPanelTemplate+=tdBegin+dateConvertToReadableDate(timeData)+tdEnd
-        rightPanelTemplate+=trEnd
-        rightPanelTemplate+=trBegin
-        rightPanelTemplate+=tdBegin+"Last modification: "+tdEnd
-        timeData=entriesData.times.lastModificationTime
-        rightPanelTemplate+=tdBegin+dateConvertToReadableDate(timeData)+tdEnd
-        rightPanelTemplate+=trEnd
-        rightPanelTemplate+=trBegin
-        rightPanelTemplate+=tdBegin+"Loaction changed: "+tdEnd
-        timeData=entriesData.times.locationChanged
-        rightPanelTemplate+=tdBegin+dateConvertToReadableDate(timeData)+tdEnd
-        rightPanelTemplate+=trEnd
+        // times data
+        // rightPanelTemplate+=trBegin
+        // rightPanelTemplate+=tdBegin+"Creation: "+tdEnd
+        // let timeData=entriesData.times.cretionTime
+        // rightPanelTemplate+=tdBegin+dateConvertToReadableDate(timeData)+tdEnd
+        // rightPanelTemplate+=trEnd
+        // rightPanelTemplate+=trBegin
+        // rightPanelTemplate+=tdBegin+"Expiry: "+tdEnd
+        // timeData=entriesData.times.expiryTime
+        // rightPanelTemplate+=tdBegin+dateConvertToReadableDate(timeData)+tdEnd
+        // rightPanelTemplate+=trEnd
+        // rightPanelTemplate+=trBegin
+        // rightPanelTemplate+=tdBegin+"Last access: "+tdEnd
+        // timeData=entriesData.times.lastAccessTime
+        // rightPanelTemplate+=tdBegin+dateConvertToReadableDate(timeData)+tdEnd
+        // rightPanelTemplate+=trEnd
+        // rightPanelTemplate+=trBegin
+        // rightPanelTemplate+=tdBegin+"Last modification: "+tdEnd
+        // timeData=entriesData.times.lastModificationTime
+        // rightPanelTemplate+=tdBegin+dateConvertToReadableDate(timeData)+tdEnd
+        // rightPanelTemplate+=trEnd
+        // rightPanelTemplate+=trBegin
+        // rightPanelTemplate+=tdBegin+"Loaction changed: "+tdEnd
+        // timeData=entriesData.times.locationChanged
+        // rightPanelTemplate+=tdBegin+dateConvertToReadableDate(timeData)+tdEnd
+        // rightPanelTemplate+=trEnd
         rightPanelTemplate+=tableEnd+divEndTag
         rightPanel.innerHTML+=rightPanelTemplate
       }
     }
   }
-//  TODO Innen folytasd!
   return
 }
 
@@ -706,6 +754,7 @@ function createDRTargetTree() {
          }                    
     }      
   }
+  return
 }
 
 // create enum data-target:dRArray
@@ -714,17 +763,34 @@ function createDataTargerDataDrKeysPairs() {
   // dataTargetArray dRarryaTree targetDRKeys
   for (let i = 0; i < dataTargetArray.length; i++) {
     for (let y = 0; y < dataTargetArray[i].length; y++) {
-      let ala=dataTargetArray[i][y].toString() 
+      let levInd=dataTargetArray[i][y].toString() 
       let value=dRarryaTree[i][y].toString() 
-      targetDRKeys[ala]=value      
+      targetDRKeys[levInd]=value      
     }    
   }
+  return
 }
 
+// create enum data-target:group name
+
+function createDatatargetGroupNameKeypairs() {
+  // a két tömb mátrix indexei nem megegyezőek, ezért másképp kell párosítani.
+  for (let i = 0; i < dataTargetArray.length; i++) {
+    let nameIndex=0
+    for (let y = 0; y < dataTargetArray[i].length; y++) {
+      let dataTargetName=dataTargetArray[i][y]
+      let textNone=dataTargetName.slice(0,4)
+      if (textNone!="none") {
+        targetNameKeys[dataTargetName]=groupsNameTree[i][nameIndex]
+        nameIndex++
+      }      
+    }    
+  }
+  return
+}
 // menu tools
 
 function groupMenuToolsOpenClose() {
-  console.log("groupMenuToolsOpenClose fut")
   const beginEnd=document.querySelectorAll('.beginEnd')
   const groupsTools=document.querySelectorAll('.groupsTools')
   for (let i = 0; i < beginEnd.length; i++) {
@@ -740,24 +806,23 @@ function groupMenuToolsOpenClose() {
       }
     })    
   }
+  return
 }
+
+// input section show, hide
+
 function inputSectionShow() {
-  const groupToolsBtn=document.querySelectorAll('.groupToolsBtn')
   const centerPanel=document.getElementById('centerPanel')
   const rightPanel=document.getElementById('rightPanel')
   const inputPanel=document.getElementById('inputPanel')
   const centerPanelDiv=document.querySelectorAll('.centerPanelDiv')
-  for (let i = 0; i < groupToolsBtn.length; i++) {
-    groupToolsBtn[i].addEventListener("click",()=>{
-      // debugger
-      centerPanel.classList.remove('active')
-      rightPanel.classList.remove('active')
-      inputPanel.classList.add('active')
-      for (let y = 0; y < centerPanelDiv.length; y++) {
-        centerPanelDiv[y].classList.remove('active')        
-      }
-    })        
-  }  
+  centerPanel.classList.remove('active')
+  rightPanel.classList.remove('active')
+  inputPanel.classList.add('active')
+  for (let y = 0; y < centerPanelDiv.length; y++) {
+    centerPanelDiv[y].classList.remove('active')        
+  }
+  return
 }
 
 function inputSectionHide() {
@@ -767,9 +832,51 @@ function inputSectionHide() {
   inputPanel.classList.remove('active')
   centerPanel.classList.add('active')
   rightPanel.classList.add('active')
+  inputPanel.innerHTML="<h2>Input section</h2>"
+  return
 }
 
+function inputSectionLoadTemplate(template) {
+  const inputPanel=document.getElementById('inputPanel')
+  inputPanel.innerHTML=template
+  return
+}
+
+// wrong panel show, hide
+
+function showWrongPanel(wrongTemplate) {
+  const wrongPanel=document.getElementById('wrongPanel')
+  wrongPanel.innerHTML=wrongTemplate
+  wrongPanel.classList.add('active')
+  
+}
+
+function hideWrongPanel() {
+  const wrongPanel=document.getElementById('wrongPanel')
+  wrongPanel.classList.remove('active')
+  setTimeout(() => {
+    wrongPanel.innerHTML=""
+  }, 1500);
+
+}
+
+
+
+
 /*GROUP ACTIONS*/ 
+
+
+function reloadNewKdbxData() {
+  clearMainPanels()
+  allParamDefault()
+  startDisplay()
+}
+
+function groupActionBtnActivated() {
+  groupDeleteBtnClick()
+  moveGroupBtnClick()
+  return
+}
 
 //Add new group
 
@@ -791,4 +898,138 @@ function addNewGroup() {
     }
 }
   */ 
+}
+
+// Move Group
+
+// move btn click
+
+function moveGroupBtnClick() {
+  const groupsMove=document.querySelectorAll('.groupsMove')
+  for (let i = 0; i < groupsMove.length; i++) {
+    groupsMove[i].addEventListener("click",()=>{
+      moveGroup(groupsMove[i],i)
+    })    
+  }
+  return
+}
+
+function moveGroup(btn,index) {
+  console.log("Btn click: "+ btn.attributes[1].value)
+  // TODO innen folytasd!
+  /*
+  Mit is kell csinálni?
+  
+  */ 
+  return
+}
+
+// Delete group
+
+// delete btn click
+
+function groupDeleteBtnClick() {
+  const groupsDeleteBtns=document.querySelectorAll('.groupsDelete')
+  for (let i = 0; i < groupsDeleteBtns.length; i++) {
+    groupsDeleteBtns[i].addEventListener('click',()=>{
+      /* - Miket kell csinálni?
+        - azonosítani kell a DR-t és a group name-t => kész
+        - az input section-t fel kell tölteni a deletéhez szükséges adatokkal => kész
+          - név => kész
+          - btn: törlés, mégsem, majd megjeleníteni => kész
+            -törlés esetén: újra betölteni a komplett alsó panelt
+            - mégsem esetén: zár az input panel, megjelenik a center és a right, majd az input panel innerHTML="" =>kész
+      */ 
+      let dataIds=groupsDeleteBtns[i].attributes[1].value
+      let deleteGroupName=targetNameKeys[dataIds]
+      let deleteDR=targetDRKeys[dataIds]
+      let deleteTemplate=`
+      <div id="deleteGroupDiv" class="column">
+      <h2 class="inputSectionH2">Delete group</h2>
+      <h3 class="inputSectionH3">Group name: ${deleteGroupName} </h3>
+      <div id="deleteBtnDiv" class="row">
+          <button id="btnDeleteGroup" class="btnAll btnDelete" >Delete</button>
+          <button id="btnCancel" class="btnAll ">Cancel</button>
+      </div>
+  </div>
+      `
+      inputSectionLoadTemplate(deleteTemplate)
+      inputSectionShow()
+      const btnCancel=document.getElementById('btnCancel')
+      btnCancel.addEventListener("click", inputSectionHide) // cancel btn click
+      const btnDeleteGroup=document.getElementById('btnDeleteGroup')
+      const urlDelete="http://127.0.0.1:9933/api/kdbx/1/groups"
+      const userLoginDatas=JSON.parse(sessionStorage.user)
+      const jwtToken=userLoginDatas.jwtToken
+      const fetchbody={       
+        "kdbxFileDto":
+        {
+            "kdbxFileIdDto": "2",
+            "kdbxFilePwDto": "1"
+        },
+        
+        "groupDto":
+        {
+            "targetGroupDirectionDto": `${deleteDR}`
+        }
+    }
+    const options= {
+      method:'DELETE',
+       body:JSON.stringify(fetchbody),
+      headers: {
+          'Content-Type': 'application/json',
+          'Accept' : 'application/json',
+          'Authorization': `Bearer ${jwtToken}`,
+        },
+  }
+      btnDeleteGroup.addEventListener("click",()=>{
+        let statusNetwork=navigator.onLine ? "Online":"OFFline"
+        // debugger
+        if (statusNetwork=="OFFline") {
+          let wrongTemplate=`<h2>Sorry!You are Offline!</h2>`
+          showWrongPanel(wrongTemplate)
+          setTimeout(() => {
+            hideWrongPanel()
+          }, 2000);
+        }
+        if (statusNetwork=="Online") {
+          
+          groupActions(urlDelete,options)
+          .then(result=>{
+            // Errors
+            // debugger
+            if (result.status) {
+              let wrongTemplate=`<h2>Sorry! An error occured! </h2>
+                                  <h3>Error code: ${result.status}</h3>`
+              showWrongPanel(wrongTemplate)
+              setTimeout(() => {
+                hideWrongPanel()
+              }, 2000);
+              inputSectionHide()
+              return
+            }
+
+            // if result==kdbxObj
+            if (result.name) {
+              // kdbx object clear
+              sessionStorage.kdbx=""
+              sessionStorage.kdbx=JSON.stringify(result)
+              reloadNewKdbxData()
+            }
+          })
+        }        
+      })
+    })
+  }
+return
+}
+
+async function groupActions(url,options) {
+  // debugger
+  try {
+    const response= await fetch(url,options)
+    return response.json()
+  } catch (error) {
+    return error
+  }
 }
