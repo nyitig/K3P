@@ -878,6 +878,66 @@ function groupActionBtnActivated() {
   return
 }
 
+// checked functions
+
+function checkList() {
+  let checkStatus=true
+  let statusNetwork=statusNetworkCheck()
+  if (!statusNetwork) {
+    let wrongTemplate=offlineTemplate()
+    showWrongPanel(wrongTemplate)
+    setTimeout(() => {
+      hideWrongPanel()
+    }, 2000);
+    checkStatus=false
+    return checkStatus
+  }
+  let userStatus=sessionStorageUserCheck()
+  if (!userStatus) {
+    let wrongTemplate=logoutStatusTemplate()
+    showWrongPanel(wrongTemplate)
+    setTimeout(() => {
+      hideWrongPanel()
+    }, 2000);
+    checkStatus=false
+    return checkStatus
+  }
+  return checkStatus
+}
+
+function statusNetworkCheck() {
+  let statusNetwork=navigator.onLine ? "Online":"OFFline"
+  return statusNetwork
+}
+
+function sessionStorageUserCheck() {
+  let userLoginCheck=false
+  if (sessionStorage.user) {
+    userLoginCheck=true
+  }
+  return userLoginCheck
+}
+
+// wrong templates
+
+function offlineTemplate() {
+  let wrongTemplate=`<h2>Sorry!You are Offline!</h2>`
+  return wrongTemplate
+}
+
+function logoutStatusTemplate() {
+  let wrongTemplate=`<h2>Log in again!</h2>`
+  return wrongTemplate
+}
+
+// jwtToken
+
+function getJwtToken() {
+  const userLoginDatas=JSON.parse(sessionStorage.user)
+  const jwtToken=userLoginDatas.jwtToken
+  return jwtToken
+}
+
 //Add new group
 
 function addNewGroup() {
@@ -908,19 +968,133 @@ function moveGroupBtnClick() {
   const groupsMove=document.querySelectorAll('.groupsMove')
   for (let i = 0; i < groupsMove.length; i++) {
     groupsMove[i].addEventListener("click",()=>{
-      moveGroup(groupsMove[i],i)
+      moveGroup(groupsMove[i])
     })    
   }
   return
 }
 
-function moveGroup(btn,index) {
-  console.log("Btn click: "+ btn.attributes[1].value)
-  // TODO innen folytasd!
+function moveGroup(btn) {
   /*
+  body:
+  {       
+    "kdbxFileDto":
+    {
+        "kdbxFilePwDto": "1"
+    },
+    
+    "groupDto":
+    {
+        "expiresDto": "",
+        "groupExpiryTimeDto": "",
+        "sourceGroupDirectionDto" : "DR",
+        "targetGroupDirectionDto": "DD",
+        "groupNameDto": "Moved group"
+    }
+}
+
   Mit is kell csinálni?
-  
+  - azonosítani kell, h melyik groupot szeretném mozgatni =ykész
+  - ahová mozgatom, azt is azonosítnia kell:
+    - input section-t létrehozni ezekkel a paraméterekkel: => kész
+      - amit mozgatok => kész
+      - ahová mozgatom => kész
+      - btns: - move és cancel => kész 
+        - ha cancel: input sectionhide => kész
+        - ha move: 
+          - url, options összeállítani, és mehet a fetch => kész
+    hibák, melyeket szűrni kell:
+      - van jwtToken? => kész
+      - van net kapcsolat? => kész
+      -   
   */ 
+  let dataIds=btn.attributes[1].value
+  let moveGroupName=targetNameKeys[dataIds]
+  let sourceGroupDirectionDto=targetDRKeys[dataIds]
+  let moveTemplate=`
+  <div id="moveGroupDiv" class="column groupActions">
+    <h2 class="inputSectionH2">Move group</h2>
+    <h3 class="inputSectionH3">Group name: ${moveGroupName} </h3>
+    <div class="selectedMenu row">
+      <label for="groupNames" class="inputLabels">Choose which group to move it to:</label>
+      <select name="groupNames" id="moveGroupListName" class="selectGroupAction">
+  `
+ 
+  let optionsBegin=`<option value="`
+  let optionsBeginClose=`">`
+  let optionsCloseTag=`</option>`
+  for (let i = 0; i < groupsNameTree.length; i++) {
+      for (let y = 0; y < groupsNameTree[i].length; y++) {
+        let kdbxObjName=groupsNameTree[i][y]
+        if (kdbxObjName!=moveGroupName) {
+          moveTemplate+=optionsBegin+kdbxObjName+optionsBeginClose+kdbxObjName+optionsCloseTag
+        }
+      }
+    
+  }
+  moveTemplate+=`
+    </select>
+    </div>
+  <div id="deleteBtnDiv" class="row">
+    <button id="btnMoveGroup" class="btnAll btnActions" >Move</button>
+    <button id="btnCancel" class="btnAll ">Cancel</button>
+  </div>
+</div>
+`
+  inputSectionLoadTemplate(moveTemplate)
+  inputSectionShow()
+
+const btnCancel=document.getElementById('btnCancel')  
+btnCancel.addEventListener("click",inputSectionHide)
+const btnMoveGroup=document.getElementById('btnMoveGroup')
+btnMoveGroup.addEventListener("click",()=>{
+  let checkedOk=checkList()
+  if (!checkedOk) {
+    inputSectionHide()
+    return
+  }
+  if (checkedOk) {
+    const moveGroupListName=document.getElementById('moveGroupListName')
+    // select key in targetNameKeys Object
+    let levindId
+    for (let key in targetNameKeys) {
+      if (targetNameKeys[key]==moveGroupListName.value) {
+        levindId=key
+      }
+    }
+    let targetGroupDirectionDto=targetDRKeys[levindId]
+    const urlMove="http://127.0.0.1:9933/api/kdbx/1/groups/move-group"
+    const jwtToken=getJwtToken()
+    const fetchbody=
+    {       
+      "kdbxFileDto":
+      {
+          "kdbxFilePwDto": "1"
+      },
+      
+      "groupDto":
+      {
+          "expiresDto": "",
+          "groupExpiryTimeDto": "",
+          "sourceGroupDirectionDto" : `${sourceGroupDirectionDto}`,
+          "targetGroupDirectionDto": `${targetGroupDirectionDto}`,
+          "groupNameDto": "Moved group"
+      }
+  }
+    
+    const options= {
+      method:'PUT',
+       body:JSON.stringify(fetchbody),
+      headers: {
+          'Content-Type': 'application/json',
+          'Accept' : 'application/json',
+          'Authorization': `Bearer ${jwtToken}`,
+        },
+  }
+  groupActions(urlMove,options)
+  .then(result=>{resultFunctions(result)})
+  }
+})
   return
 }
 
@@ -944,11 +1118,11 @@ function groupDeleteBtnClick() {
       let deleteGroupName=targetNameKeys[dataIds]
       let deleteDR=targetDRKeys[dataIds]
       let deleteTemplate=`
-      <div id="deleteGroupDiv" class="column">
+      <div id="deleteGroupDiv" class="column groupActions">
       <h2 class="inputSectionH2">Delete group</h2>
       <h3 class="inputSectionH3">Group name: ${deleteGroupName} </h3>
       <div id="deleteBtnDiv" class="row">
-          <button id="btnDeleteGroup" class="btnAll btnDelete" >Delete</button>
+          <button id="btnDeleteGroup" class="btnAll btnActions" >Delete</button>
           <button id="btnCancel" class="btnAll ">Cancel</button>
       </div>
   </div>
@@ -958,46 +1132,57 @@ function groupDeleteBtnClick() {
       const btnCancel=document.getElementById('btnCancel')
       btnCancel.addEventListener("click", inputSectionHide) // cancel btn click
       const btnDeleteGroup=document.getElementById('btnDeleteGroup')
-      const urlDelete="http://127.0.0.1:9933/api/kdbx/1/groups"
-      const userLoginDatas=JSON.parse(sessionStorage.user)
-      const jwtToken=userLoginDatas.jwtToken
-      const fetchbody={       
-        "kdbxFileDto":
-        {
-            "kdbxFileIdDto": "2",
-            "kdbxFilePwDto": "1"
-        },
-        
-        "groupDto":
-        {
-            "targetGroupDirectionDto": `${deleteDR}`
-        }
-    }
-    const options= {
-      method:'DELETE',
-       body:JSON.stringify(fetchbody),
-      headers: {
-          'Content-Type': 'application/json',
-          'Accept' : 'application/json',
-          'Authorization': `Bearer ${jwtToken}`,
-        },
-  }
       btnDeleteGroup.addEventListener("click",()=>{
-        let statusNetwork=navigator.onLine ? "Online":"OFFline"
-        // debugger
-        if (statusNetwork=="OFFline") {
-          let wrongTemplate=`<h2>Sorry!You are Offline!</h2>`
-          showWrongPanel(wrongTemplate)
-          setTimeout(() => {
-            hideWrongPanel()
-          }, 2000);
+        let checkedOk=checkList()
+        if (!checkedOk) {
+          inputSectionHide()
+          return
         }
-        if (statusNetwork=="Online") {
-          
+        const urlDelete="http://127.0.0.1:9933/api/kdbx/1/groups"          
+          const jwtToken=getJwtToken()
+          const fetchbody={       
+            "kdbxFileDto":
+            {
+                "kdbxFileIdDto": "2",
+                "kdbxFilePwDto": "1"
+            },
+            
+            "groupDto":
+            {
+                "targetGroupDirectionDto": `${deleteDR}`
+            }
+        }
+        const options= {
+          method:'DELETE',
+           body:JSON.stringify(fetchbody),
+          headers: {
+              'Content-Type': 'application/json',
+              'Accept' : 'application/json',
+              'Authorization': `Bearer ${jwtToken}`,
+            },
+      }
+     
           groupActions(urlDelete,options)
-          .then(result=>{
-            // Errors
-            // debugger
+          .then(result=>{resultFunctions(result)})     
+      })
+    })
+  }
+return
+}
+
+async function groupActions(url,options) {
+  // debugger
+  try {
+    const response= await fetch(url,options)
+    return response.json()
+  } catch (error) {
+    return error
+  }
+}
+
+function resultFunctions(result) {
+              // Errors
+            //  debugger
             if (result.status) {
               let wrongTemplate=`<h2>Sorry! An error occured! </h2>
                                   <h3>Error code: ${result.status}</h3>`
@@ -1016,20 +1201,4 @@ function groupDeleteBtnClick() {
               sessionStorage.kdbx=JSON.stringify(result)
               reloadNewKdbxData()
             }
-          })
-        }        
-      })
-    })
-  }
-return
-}
-
-async function groupActions(url,options) {
-  // debugger
-  try {
-    const response= await fetch(url,options)
-    return response.json()
-  } catch (error) {
-    return error
-  }
 }

@@ -468,11 +468,29 @@ input {
     opacity: 1;
 }
 
-/* input Panel delete group */
+/* input panel all actions */
 
-#deleteGroupDiv {
+.groupActions {
     margin: 1rem;
 }
+
+.btnActions {
+    margin-right: 6rem;
+}
+
+.selectedMenu {
+    margin: 1rem 0;
+}
+.inputLabels {
+    margin-right: 2rem;
+}
+.selectGroupAction {
+    text-align: center;
+    width: 10rem;
+}
+/* input Panel delete group */
+
+
 .inputSectionH2 {
     margin: 1rem 0;
 }
@@ -481,7 +499,4 @@ input {
 }
 #deleteBtnDiv {
     margin: 1rem 0;
-}
-.btnDelete {
-    margin-right: 6rem;
 }
