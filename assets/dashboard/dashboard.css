@@ -500,3 +500,26 @@ input {
 #deleteBtnDiv {
     margin: 1rem 0;
 }
+
+#addExpDiv {
+    height: 0px;
+    min-height: 0px;
+    overflow: hidden;
+    opacity: 0;
+}
+#addExpDiv.active {
+    min-height: 3rem;
+    opacity: 1;
+}
+input[type='checkbox'] {
+    width: 20px;
+    height: 20px;
+    padding: 5px;
+    border: none;
+}
+input[type='checkbox']:checked {
+    background-color: rgb(137, 95, 18);
+}
+.inputDiv {
+    margin: 1rem 0;
+}
