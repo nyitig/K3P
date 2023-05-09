@@ -878,9 +878,11 @@ function reloadNewKdbxData() {
 }
 
 function groupActionBtnActivated() {
+  addNewGroupBtnClick()
+  editGroupBtnClick()
   groupDeleteBtnClick()
   moveGroupBtnClick()
-  addNewGroupBtnClick()
+
   return
 }
 
@@ -1021,16 +1023,7 @@ const addGroupExpInput=document.getElementById('addGroupExpInput')
 let groupExpiryTimeDto=""
 let expiresDto=false
 addGroupExpChkbx.addEventListener('click',()=>{
-  if (!addGroupExpChkbx.checked) {
-    addExpDiv.classList.remove('active')
-    expiresDto=false
-    addGroupExpInput.value=""
-    groupExpiryTimeDto=""
-  }
-  if (addGroupExpChkbx.checked) {
-    addExpDiv.classList.add('active')
-    expiresDto=true
-  }
+  expiresDto=expiresDtoChange(expiresDto,addExpDiv,addGroupExpInput)
 })
 
 addGroupExpInput.addEventListener('change',()=>{
@@ -1114,6 +1107,111 @@ function addNewGroupsCheck(expiresDto,groupExpiryTimeDto,groupNameDto) {
 
 // Edit group
 
+function editGroupBtnClick() {
+ const groupsEditBtn=document.querySelectorAll('.groupsEdit')
+ for (let i = 0; i < groupsEditBtn.length; i++) {
+  groupsEditBtn[i].addEventListener('click',()=>{
+    editGroup(groupsEditBtn[i])
+  })  
+ }
+return
+}
+
+function editGroup(btn) {
+  /*
+  body:
+  {       
+    "kdbxFileDto":
+    {
+        "kdbxFileIdDto": "2",
+        "kdbxFilePwDto": "1"
+    },
+    
+    "groupDto":
+    {
+        "expiresDto": "false",
+        "groupExpiryTimeDto": "3000000000000",
+        "targetGroupDirectionDto": "D",
+        "groupNameDto": "123"
+    }
+}
+
+
+Mit is kell csinálni?
+  - azonosítani, h melyik groupról van szó ==targetGroupDirectionDto => kész
+  - input section templatet létrehozni: => kész
+    - input-ok: => kész
+      - expiresDto
+      - groupExpiryTimeDto
+      - groupNameDto
+    - btn-ok: edit, cancel
+  - template=innerHtml => kész
+  - megjeleníteni az input sectiont => kész
+  - elmenteni az inputok változtatásait => kész
+  - btn-okhoz click funct=> 
+    - cancel: hide input section & input section innerHtml="" => kész
+    - edit btn: 
+      - check: change?
+                - false => wrongTemplate=> wrongsection
+                - true => checkList():
+                                  - false => return
+                                  - true => url, getJwtToken(), options => getAction().then result=>resultFunctions 
+
+  */ 
+  let dataIds=getDataIds(btn)
+  let groupName=targetNameKeys[dataIds]
+  let editGroupTemplate=`<div id="addGroupDiv" class="column groupActions">
+<h2 class="inputSectionH2">Edit group</h2>
+<h3 class="inputSectionH3">Group name: ${groupName} </h3>
+<div class="addNameDiv row alItCent inputDiv">
+  <label for="groupNames" class="inputLabels">The new name of the group:</label>
+  <input type="text" name="groupNames" id="editGroupNameInput" value="${groupName}" autocomplete="off">
+</div>
+<div  class=" addExpChkbxDiv row alItCent inputDiv">
+  <label for="groupExp" class="inputLabels">change an expiration date</label>
+  <input type="checkbox" name="groupExp" id="addGroupExpChkbx">
+</div>
+<div id="addExpDiv" class=" row alItCent inputDiv">
+  <label for="groupExp" class="inputLabels">expiration date of the ${groupName}:</label>
+  <input type="datetime-local" name="groupExp" id="addGroupExpInput">
+</div>
+<div id="addBtnDiv" class="row inputDiv">
+<button id="btnEditGroup" class="btnAll btnActions" >Edit</button>
+<button id="btnCancel" class="btnAll ">Cancel</button>
+</div>
+`
+inputSectionLoadTemplate(editGroupTemplate)
+inputSectionShow()
+btnCancel()
+const addGroupExpChkbx=document.getElementById('addGroupExpChkbx')
+const addExpDiv=document.getElementById('addExpDiv')
+const addGroupExpInput=document.getElementById('addGroupExpInput')
+let groupExpiryTimeDto=""
+let expiresDto=false
+addGroupExpChkbx.addEventListener('click',()=>{
+  expiresDto=expiresDtoChange(expiresDto,addExpDiv,addGroupExpInput)
+})
+addGroupExpInput.addEventListener('change',()=>{
+  let d=dataTimeToMilisec(addGroupExpInput)
+  groupExpiryTimeDto=d
+ })
+ let targetGroupDirectionDto=targetDRKeys[dataIds]
+ let groupNameDto=groupName
+const editGroupNameInput=document.getElementById('editGroupNameInput')
+editGroupNameInput.addEventListener('keyup',()=>{
+  groupNameDto=editGroupNameInput.value
+})
+const btnEditGroup=document.getElementById('btnEditGroup')
+btnEditGroup.addEventListener("click",()=>{
+// TODO innne folytasd!
+
+})
+
+
+
+
+return
+}
 
 // Move Group
 
@@ -1131,23 +1229,6 @@ function moveGroupBtnClick() {
 
 function moveGroup(btn) {
   /*
-  body:
-  {       
-    "kdbxFileDto":
-    {
-        "kdbxFilePwDto": "1"
-    },
-    
-    "groupDto":
-    {
-        "expiresDto": "",
-        "groupExpiryTimeDto": "",
-        "sourceGroupDirectionDto" : "DR",
-        "targetGroupDirectionDto": "DD",
-        "groupNameDto": "Moved group"
-    }
-}
-
   Mit is kell csinálni?
   - azonosítani kell, h melyik groupot szeretném mozgatni =ykész
   - ahová mozgatom, azt is azonosítnia kell:
@@ -1369,4 +1450,18 @@ function getDataIds(btn) {
 function btnCancel() {
   const btnCancel=document.getElementById('btnCancel')  
 btnCancel.addEventListener("click",inputSectionHide)
+}
+
+function expiresDtoChange(expiresDto,addExpDiv,addGroupExpInput) {
+  if (!addGroupExpChkbx.checked) {
+    addExpDiv.classList.remove('active')
+    expiresDto=false
+    addGroupExpInput.value=""
+    groupExpiryTimeDto=""
+  }
+  if (addGroupExpChkbx.checked) {
+    addExpDiv.classList.add('active')
+    expiresDto=true
+  }
+  return expiresDto
 }
