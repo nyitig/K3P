@@ -166,6 +166,7 @@ function startDisplay() {
     groupMenuToolsOpenClose()
     groupActionBtnActivated()
     groupAddContextMenu()
+    // mainLeftClick()
     // inputSectionShow()
    return
   }
@@ -336,6 +337,10 @@ function groupsSorter(obj,actIndex) {
   }
   return
 }
+
+/* MAINE LEFT CLICK ACTIONS*/ 
+
+
 
 /* LEFT PANEL CREATE FUNCTIONS */ 
 
@@ -518,13 +523,14 @@ function activatedGroupEntries() {
   for (let i = 0; i < dataTarget.length; i++) {
     dataTarget[i].addEventListener('click',()=>{
       inputSectionHide()
+      contextMenuHide()
       for (let y = 0; y < dataTarget.length; y++) {
         // add clicked div active class, remove other div class
         if (i==y) {
-          if (!dataTarget[y].classList.contains('active')) {
+          // if (!dataTarget[y].classList.contains('active')) {
             dataTarget[y].classList.add('active')
             beginEnd[y].classList.add('active')              
-          }
+          // }
         }
         if (i!=y) {
           dataTarget[y].classList.remove('active')
@@ -562,6 +568,7 @@ for (let i = 0; i < dataTarget.length; i++) {
   dataTarget[i].addEventListener("contextmenu",(e)=>{
     e.preventDefault()
     inputSectionHide()
+    groupNameActivated(i)
     let xCoord=e.pageX
     let yCoord=e.pageY
     let dataIds=dataTarget[i].attributes[1].value
@@ -577,6 +584,28 @@ for (let i = 0; i < dataTarget.length; i++) {
     groupContextMenuActionsBtnAcitvated(dataIds)
   })
 }
+}
+
+function groupNameActivated(index) {
+  const dataTarget=document.querySelectorAll('[data-target]')
+  groupToolsMenuhide()
+  for (let i = 0; i < dataTarget.length; i++) {
+    if (i==index) {
+      dataTarget[i].classList.add('active')
+    }
+    if (i!=index) {
+      dataTarget[i].classList.remove('active')
+    }    
+  }
+  return
+}
+
+function groupToolsMenuhide() {
+  const beginEnd=document.querySelectorAll('.beginEnd')
+  for (let i = 0; i < beginEnd.length; i++) {
+    beginEnd[i].classList.remove('active')
+    
+  }
 }
 
 function groupContextMenuTemplate() {
@@ -652,6 +681,10 @@ function moveGroupBtnClickContMen(dataIds) {
     })    
   }
   return
+}
+
+function allGroupMenudefault(params) {
+  
 }
 /* CREATE RIGHT PANEL*/ 
 
