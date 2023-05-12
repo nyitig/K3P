@@ -165,6 +165,7 @@ function startDisplay() {
     showHideFullPageSect()
     groupMenuToolsOpenClose()
     groupActionBtnActivated()
+    groupAddContextMenu()
     // inputSectionShow()
    return
   }
@@ -554,7 +555,104 @@ function activatedGroupEntries() {
   }
 }
 
+// contextmenu left mouse click
+function groupAddContextMenu() {
+  const dataTarget=document.querySelectorAll('[data-target]')
+for (let i = 0; i < dataTarget.length; i++) {
+  dataTarget[i].addEventListener("contextmenu",(e)=>{
+    e.preventDefault()
+    inputSectionHide()
+    let xCoord=e.pageX
+    let yCoord=e.pageY
+    let dataIds=dataTarget[i].attributes[1].value
+    const contextMenu=document.getElementById('contextMenu')
+    contextMenu.innerHTML=groupContextMenuTemplate()
+    contextMenu.style.top=yCoord+"px"
+    contextMenu.style.height="10rem"
+    contextMenu.style.left=xCoord+"px"
+    setTimeout(() => {
+      contextMenu.classList.add('active')
+    }, 180);
+    
+    groupContextMenuActionsBtnAcitvated(dataIds)
+  })
+}
+}
 
+function groupContextMenuTemplate() {
+  let addBtnBegin=`<div class="groupsAdd groupToolsBtn contextmenuBtn" `
+  let addEnd=`" >Add</div>`
+  let editBtnBegin=` <div class="groupsEdit groupToolsBtn contextmenuBtn" `
+  let editEnd=`" >Edit</div>`
+  let moveBtnBegin=`<div class="groupsMove groupToolsBtn contextmenuBtn" `
+  let moveEnd=`" >Move</div>`
+  let deleteBtnBegin=`<div class="groupsDelete groupToolsBtn contextmenuBtn" `
+  let deleteEnd=`"  >Delete</div>`
+  let contextMenuTemplate=addBtnBegin+addEnd+editBtnBegin+editEnd+moveBtnBegin+moveEnd+deleteBtnBegin+deleteEnd
+  return contextMenuTemplate
+}
+
+function groupContextMenuActionsBtnAcitvated(dataIds) {
+  addNewGroupBtnClickContMen(dataIds)
+  editGroupBtnClickContMen(dataIds)
+  groupDeleteBtnClickContMen(dataIds)
+  moveGroupBtnClickContMen(dataIds)
+  return
+}
+
+function contextMenuHide() {
+  const contextMenu=document.getElementById('contextMenu')
+  contextMenu.classList.remove('active')
+  setTimeout(() => {
+    contextMenu.removeAttribute('style')
+  }, 500);
+  return
+}
+
+function addNewGroupBtnClickContMen(dataIds) {
+  const groupsAddBtns=document.querySelectorAll('.groupsAdd')
+  for (let i = 0; i < groupsAddBtns.length; i++) {
+    groupsAddBtns[i].addEventListener('click',()=>{
+      contextMenuHide()
+      addNewGroup(dataIds)
+    })    
+  }
+  return
+}
+
+
+function editGroupBtnClickContMen(dataIds) {
+  const groupsEditBtn=document.querySelectorAll('.groupsEdit')
+  for (let i = 0; i < groupsEditBtn.length; i++) {
+   groupsEditBtn[i].addEventListener('click',()=>{
+    contextMenuHide()
+    editGroup(dataIds)
+   })  
+  }
+  return
+}
+
+function groupDeleteBtnClickContMen(dataIds) {
+  const groupsDeleteBtns=document.querySelectorAll('.groupsDelete')
+  for (let i = 0; i < groupsDeleteBtns.length; i++) {
+    groupsDeleteBtns[i].addEventListener('click',()=>{
+      contextMenuHide()
+      groupDelete(dataIds)
+    })
+  }
+  return
+}
+
+function moveGroupBtnClickContMen(dataIds) {
+  const groupsMove=document.querySelectorAll('.groupsMove')
+  for (let i = 0; i < groupsMove.length; i++) {
+    groupsMove[i].addEventListener("click",()=>{
+      contextMenuHide()
+      moveGroup(dataIds)
+    })    
+  }
+  return
+}
 /* CREATE RIGHT PANEL*/ 
 
 
@@ -952,13 +1050,14 @@ function addNewGroupBtnClick() {
   const groupsAddBtns=document.querySelectorAll('.groupsAdd')
   for (let i = 0; i < groupsAddBtns.length; i++) {
     groupsAddBtns[i].addEventListener('click',()=>{
-      addNewGroup(groupsAddBtns[i])
+      let dataIds=getDataIds(groupsAddBtns[i])
+      addNewGroup(dataIds)
     })    
   }
   return
 }
 
-function addNewGroup(btn) {
+function addNewGroup(dataIds) {
   /*
   Ezek  a paraméterek kellenek:
   "kdbxFileDto":
@@ -991,8 +1090,10 @@ Mit is kell csinálni?
     - ha minden ok=> létrehozni afethez az url, options-t => groupActions(url,options).then(result=>resultFunctions(result))
 
 */  
-let dataIds=getDataIds(btn)
+
 let addGroupName=targetNameKeys[dataIds]
+console.log(dataIds)
+console.log(addGroupName)
 let addGroupTemplate=` <div id="addGroupDiv" class="column groupActions">
 <h2 class="inputSectionH2">Add group</h2>
 <h3 class="inputSectionH3">Group name: ${addGroupName} </h3>
@@ -1040,6 +1141,9 @@ addGroupNameInput.addEventListener("keyup",()=>{
 const btnAddGroup=document.getElementById('btnAddGroup')
 btnAddGroup.addEventListener("click",()=>{
   let checkOk=checkList()
+  if (!checkOk) {
+    return
+  }
   checkOk=addNewGroupsCheck(expiresDto,groupExpiryTimeDto,groupNameDto)
   if (!checkOk) {
     return
@@ -1111,13 +1215,14 @@ function editGroupBtnClick() {
  const groupsEditBtn=document.querySelectorAll('.groupsEdit')
  for (let i = 0; i < groupsEditBtn.length; i++) {
   groupsEditBtn[i].addEventListener('click',()=>{
-    editGroup(groupsEditBtn[i])
+    let dataIds=getDataIds(groupsEditBtn[i])
+    editGroup(dataIds)
   })  
  }
 return
 }
 
-function editGroup(btn) {
+function editGroup(dataIds) {
   /*
   body:
   {       
@@ -1158,59 +1263,120 @@ Mit is kell csinálni?
                                   - true => url, getJwtToken(), options => getAction().then result=>resultFunctions 
 
   */ 
-  let dataIds=getDataIds(btn)
   let groupName=targetNameKeys[dataIds]
   let editGroupTemplate=`<div id="addGroupDiv" class="column groupActions">
-<h2 class="inputSectionH2">Edit group</h2>
-<h3 class="inputSectionH3">Group name: ${groupName} </h3>
-<div class="addNameDiv row alItCent inputDiv">
-  <label for="groupNames" class="inputLabels">The new name of the group:</label>
-  <input type="text" name="groupNames" id="editGroupNameInput" value="${groupName}" autocomplete="off">
-</div>
-<div  class=" addExpChkbxDiv row alItCent inputDiv">
-  <label for="groupExp" class="inputLabels">change an expiration date</label>
-  <input type="checkbox" name="groupExp" id="addGroupExpChkbx">
-</div>
-<div id="addExpDiv" class=" row alItCent inputDiv">
-  <label for="groupExp" class="inputLabels">expiration date of the ${groupName}:</label>
-  <input type="datetime-local" name="groupExp" id="addGroupExpInput">
-</div>
-<div id="addBtnDiv" class="row inputDiv">
-<button id="btnEditGroup" class="btnAll btnActions" >Edit</button>
-<button id="btnCancel" class="btnAll ">Cancel</button>
-</div>
+  <h2 class="inputSectionH2">Edit group</h2>
+  <h3 class="inputSectionH3">Group name: ${groupName} </h3>
+  <div class="addNameDiv row alItCent inputDiv">
+    <label for="groupNames" class="inputLabels">The new name of the group:</label>
+    <input type="text" name="groupNames" id="editGroupNameInput" value="${groupName}" autocomplete="off">
+  </div>
+  <div  class=" addExpChkbxDiv row alItCent inputDiv">
+    <label for="groupExp" class="inputLabels">change an expiration date</label>
+    <input type="checkbox" name="groupExp" id="addGroupExpChkbx">
+  </div>
+  <div id="addExpDiv" class=" row alItCent inputDiv">
+    <label for="groupExp" class="inputLabels">expiration date of the ${groupName}:</label>
+    <input type="datetime-local" name="groupExp" id="addGroupExpInput">
+  </div>
+  <div id="addBtnDiv" class="row inputDiv">
+    <button id="btnEditGroup" class="btnAll btnActions" >Edit</button>
+    <button id="btnCancel" class="btnAll ">Cancel</button>
+  </div>
 `
-inputSectionLoadTemplate(editGroupTemplate)
-inputSectionShow()
-btnCancel()
-const addGroupExpChkbx=document.getElementById('addGroupExpChkbx')
-const addExpDiv=document.getElementById('addExpDiv')
-const addGroupExpInput=document.getElementById('addGroupExpInput')
-let groupExpiryTimeDto=""
-let expiresDto=false
-addGroupExpChkbx.addEventListener('click',()=>{
-  expiresDto=expiresDtoChange(expiresDto,addExpDiv,addGroupExpInput)
-})
-addGroupExpInput.addEventListener('change',()=>{
-  let d=dataTimeToMilisec(addGroupExpInput)
-  groupExpiryTimeDto=d
- })
- let targetGroupDirectionDto=targetDRKeys[dataIds]
- let groupNameDto=groupName
-const editGroupNameInput=document.getElementById('editGroupNameInput')
-editGroupNameInput.addEventListener('keyup',()=>{
-  groupNameDto=editGroupNameInput.value
-})
-const btnEditGroup=document.getElementById('btnEditGroup')
-btnEditGroup.addEventListener("click",()=>{
-// TODO innne folytasd!
+  inputSectionLoadTemplate(editGroupTemplate)
+  inputSectionShow()
+  btnCancel()
+  const addGroupExpChkbx=document.getElementById('addGroupExpChkbx')
+  const addExpDiv=document.getElementById('addExpDiv')
+  const addGroupExpInput=document.getElementById('addGroupExpInput')
+  let groupExpiryTimeDto=""
+  let expiresDto=false
+  addGroupExpChkbx.addEventListener('click',()=>{
+    expiresDto=expiresDtoChange(expiresDto,addExpDiv,addGroupExpInput)
+  })
+  addGroupExpInput.addEventListener('change',()=>{
+    let d=dataTimeToMilisec(addGroupExpInput)
+    groupExpiryTimeDto=d
+  })
+  let targetGroupDirectionDto=targetDRKeys[dataIds]
+  let groupNameDto=groupName
+  const editGroupNameInput=document.getElementById('editGroupNameInput')
+  editGroupNameInput.addEventListener('keyup',()=>{
+    groupNameDto=editGroupNameInput.value
+  })
+  const btnEditGroup=document.getElementById('btnEditGroup')
+  btnEditGroup.addEventListener("click",()=>{
+    let checkOk=checkList()
+    if (!checkOk) {
+     return
+    }
+    checkOk=editGroupCheck(groupName,groupNameDto,expiresDto,groupExpiryTimeDto,)
+    if (!checkOk) {
+      return
+    }
+  if (checkOk) {
+    console.log("True ág")
+    const urlAdd="http://127.0.0.1:9933/api/kdbx/1/groups/"
+    const jwtToken=getJwtToken()
+    let fetchbody={       
+      "kdbxFileDto":
+      {
+          "kdbxFileIdDto": "2",
+          "kdbxFilePwDto": "1"
+      },
+      
+      "groupDto":
+      {
+          "expiresDto": "false",
+          "groupExpiryTimeDto": "3000000000000",
+          "targetGroupDirectionDto": `${targetGroupDirectionDto}`,
+          "groupNameDto": `${groupNameDto}`
+      }
+  }
+  
+  const options= {
+    method:'PUT',
+     body:JSON.stringify(fetchbody),
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept' : 'application/json',
+        'Authorization': `Bearer ${jwtToken}`,
+      },
+  }
+  groupActions(urlAdd,options)
+  .then(result=>{resultFunctions(result)})
+  }
 
-})
+  })
 
+  return
+  }
 
-
-
-return
+function editGroupCheck(groupName,groupNameDto,expiresDto,groupExpiryTimeDto,) {
+  let checkStatus=true
+  if (groupNameDto==groupName) {
+    checkStatus=false
+    let wrongTemplate=`<h2>You have not changed the group name!</h2>`
+    showWrongPanel(wrongTemplate)
+    setTimeout(() => {
+      hideWrongPanel()
+    }, 2000);
+    return checkStatus
+  }
+  if (expiresDto) {
+    if (groupExpiryTimeDto=="") {
+      checkStatus=false
+      let wrongTemplate=`<h2>You didn't specify an expiration date!</h2>`
+      showWrongPanel(wrongTemplate)
+      setTimeout(() => {
+        hideWrongPanel()
+      }, 2000);
+      return checkStatus
+    }
+  }
+  
+  return checkStatus
 }
 
 // Move Group
@@ -1221,13 +1387,14 @@ function moveGroupBtnClick() {
   const groupsMove=document.querySelectorAll('.groupsMove')
   for (let i = 0; i < groupsMove.length; i++) {
     groupsMove[i].addEventListener("click",()=>{
-      moveGroup(groupsMove[i])
+      let dataIds=getDataIds(groupsMove[i])
+      moveGroup(dataIds)
     })    
   }
   return
 }
 
-function moveGroup(btn) {
+function moveGroup(dataIds) {
   /*
   Mit is kell csinálni?
   - azonosítani kell, h melyik groupot szeretném mozgatni =ykész
@@ -1244,7 +1411,6 @@ function moveGroup(btn) {
       - van net kapcsolat? => kész
       -   
   */ 
-  let dataIds=getDataIds(btn)
   let moveGroupName=targetNameKeys[dataIds]
   let sourceGroupDirectionDto=targetDRKeys[dataIds]
   let moveTemplate=`
@@ -1342,13 +1508,14 @@ function groupDeleteBtnClick() {
   const groupsDeleteBtns=document.querySelectorAll('.groupsDelete')
   for (let i = 0; i < groupsDeleteBtns.length; i++) {
     groupsDeleteBtns[i].addEventListener('click',()=>{
-          groupDelete(groupsDeleteBtns[i])
+      let dataIds=getDataIds(groupsDeleteBtns[i])
+          groupDelete(dataIds)
     })
   }
 return
 }
 
-function groupDelete(btn) {
+function groupDelete(dataIds) {
         /* - Miket kell csinálni?
         - azonosítani kell a DR-t és a group name-t => kész
         - az input section-t fel kell tölteni a deletéhez szükséges adatokkal => kész
@@ -1357,7 +1524,6 @@ function groupDelete(btn) {
             -törlés esetén: újra betölteni a komplett alsó panelt
             - mégsem esetén: zár az input panel, megjelenik a center és a right, majd az input panel innerHTML="" =>kész
       */ 
-            let dataIds=getDataIds(btn)
             let deleteGroupName=targetNameKeys[dataIds]
             let deleteDR=targetDRKeys[dataIds]
             let deleteTemplate=`

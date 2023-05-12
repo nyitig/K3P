@@ -281,6 +281,14 @@ body {
 .groupToolsBtn:hover {
     background-color: rgba(91, 165, 201, 0.3);
     border-radius: 4px;
+    cursor: pointer;
+}
+.contextmenuBtn {
+    width: 5rem;
+    text-align: center;
+}
+.contextmenuBtn:hover {
+    background-color: var(--bgdColor);
 }
 .groupsTools.active {
     background-color: var(--bgdColor);
@@ -462,11 +470,26 @@ input {
     box-shadow: 1px 10px 21px rgba(91, 165, 201, 0.3);
 }
 
-#wrongPanel.active {
+#wrongPanel.active, #contextMenu.active {
     z-index: 20;
     min-height: 5rem;
     opacity: 1;
 }
+#contextMenu {
+    padding: 1rem;
+    position: absolute;
+    left: -200px;
+    z-index: 0;
+    min-height: 0rem;
+    min-width: 10rem;
+    opacity: 0;
+    overflow: hidden;
+    background-color: rgba(91, 165, 201, 1);
+    border: 2px solid rgba(67, 165, 161, 0.7);
+    border-radius: 4px;
+    box-shadow: 1px 10px 21px rgba(91, 165, 201, 0.3);
+}
+
 
 /* input panel all actions */
 

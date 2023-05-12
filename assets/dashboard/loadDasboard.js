@@ -72,6 +72,9 @@ const fullaPageTemplate=`
  <section id="wrongPanel" class="column alItCent">
 
  </section>
+ <section id="contextMenu" class="column alItCent">
+
+ </section>
 </main>
 
 `
