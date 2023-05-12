@@ -683,9 +683,6 @@ function moveGroupBtnClickContMen(dataIds) {
   return
 }
 
-function allGroupMenudefault(params) {
-  
-}
 /* CREATE RIGHT PANEL*/ 
 
 
