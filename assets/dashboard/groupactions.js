@@ -1,15 +1,3 @@
-checkKdbxObjectGroupName()
-
-function checkKdbxObjectGroupName() {
-  let kdbxObjName=JSON.parse(sessionStorage.kdbx)
-if (kdbxObjName.name!=undefined) {
-  groupActionBtnActivated()
-  groupAddContextMenu()
-  return
-}
-}
-
-
 /*GROUP ACTIONS*/ 
 
 
@@ -18,6 +6,7 @@ function reloadNewKdbxData() {
   allParamDefault()
   startDisplay()
   checkKdbxObjectGroupName()
+return
 }
 
 function groupActionBtnActivated() {
@@ -130,8 +119,6 @@ Mit is kell csinálni?
 */  
 
 let addGroupName=targetNameKeys[dataIds]
-console.log(dataIds)
-console.log(addGroupName)
 let addGroupTemplate=` <div id="addGroupDiv" class="column groupActions">
 <h2 class="inputSectionH2">Add group</h2>
 <h3 class="inputSectionH3">Group name: ${addGroupName} </h3>
@@ -187,7 +174,7 @@ btnAddGroup.addEventListener("click",()=>{
     return
   }
   if (checkOk) {
-  const urlAdd="http://127.0.0.1:9933/api/kdbx/1/groups"
+  const urlAdd=urlBegin+"/api/kdbx/1/groups"
   const jwtToken=getJwtToken()
   let fetchbody={       
     "kdbxFileDto":
@@ -215,8 +202,8 @@ const options= {
 }
 groupActions(urlAdd,options)
 .then(result=>{resultFunctions(result)})
-
-  }
+return
+}
 })
 
 return
@@ -354,8 +341,7 @@ Mit is kell csinálni?
       return
     }
   if (checkOk) {
-    console.log("True ág")
-    const urlAdd="http://127.0.0.1:9933/api/kdbx/1/groups/"
+    const urlAdd=urlBegin+"/api/kdbx/1/groups/"
     const jwtToken=getJwtToken()
     let fetchbody={       
       "kdbxFileDto":
@@ -503,7 +489,7 @@ btnMoveGroup.addEventListener("click",()=>{
       }
     }
     let targetGroupDirectionDto=targetDRKeys[levindId]
-    const urlMove="http://127.0.0.1:9933/api/kdbx/1/groups/move-group"
+    const urlMove=urlBegin+"/api/kdbx/1/groups/move-group"
     const jwtToken=getJwtToken()
     const fetchbody=
     {       
@@ -585,7 +571,7 @@ function groupDelete(dataIds) {
                 inputSectionHide()
                 return
               }
-              const urlDelete="http://127.0.0.1:9933/api/kdbx/1/groups"          
+              const urlDelete=urlBegin+"/api/kdbx/1/groups"          
                 const jwtToken=getJwtToken()
                 const fetchbody={       
                   "kdbxFileDto":
@@ -702,7 +688,6 @@ function addNewGroupBtnClickContMen(dataIds) {
   }
   return
 }
-
 
 function editGroupBtnClickContMen(dataIds) {
   const groupsEditBtn=document.querySelectorAll('.groupsEdit')

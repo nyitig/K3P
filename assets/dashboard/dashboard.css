@@ -496,9 +496,9 @@ input {
     min-width: 10rem;
     opacity: 0;
     overflow: hidden;
-    background-color: rgba(91, 165, 201, 1);
+    background-color:rgb(195 229 245);
     border: 2px solid rgba(67, 165, 161, 0.7);
-    border-radius: 4px;
+    border-radius: 21px;
     box-shadow: 1px 10px 21px rgba(91, 165, 201, 0.3);
 }
 
@@ -518,6 +518,7 @@ input {
 }
 .inputLabels {
     margin-right: 2rem;
+    min-width: 15rem;
 }
 .selectGroupAction {
     text-align: center;
@@ -557,4 +558,14 @@ input[type='checkbox']:checked {
 }
 .inputDiv {
     margin: 1rem 0;
+}
+.textarea {
+    padding: 0.5rem;
+    border: none;
+    border-radius: 14px;
+}
+.textarea:focus {
+    padding: 0.5rem;
+    outline: none;
+    border: none;
 }

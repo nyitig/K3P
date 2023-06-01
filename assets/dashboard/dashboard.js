@@ -923,6 +923,7 @@ function resultFunctions(result) {
               sessionStorage.kdbx=""
               sessionStorage.kdbx=JSON.stringify(result)
               reloadNewKdbxData()
+              return
             }
 }
 
