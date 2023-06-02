@@ -356,6 +356,46 @@ body {
     color: var(--bgdColor);
     border: none;
 }
+
+/* ENTRIES MENU ACTIONS CONTEAINER */
+
+.entriesNameBox {
+    min-height: 2.8rem;
+}
+
+.entriesActions {
+    position: relative;
+    width: 0rem;
+    height: 0rem;
+    overflow: hidden;
+}
+.entriesActions.active {
+    position: relative;
+    width: 40px;
+    height: 40px;
+}
+.entriesImgConst {
+    position: absolute;
+}
+.entriesTools {
+    height: 0rem;
+    overflow: hidden;
+}
+.entriesTools.active {
+    padding: 0.3rem;
+    margin-top: 0.5rem;
+    height: 3rem;
+}
+.entriesToolsBtn {
+    padding: 0.3rem;
+    min-width: 4rem;
+    text-align: center;
+    border-radius: 4px;
+    border: 1px solid rgb(137, 95, 18);
+}
+.entriesToolsBtn:hover {
+    background-color: var(--bgdColor);
+}
 /* rightPanel */
 #rightPanel {
     height: 100vh;

@@ -164,6 +164,7 @@ function startDisplay() {
     createDatatargetGroupNameKeypairs()
     showHideFullPageSect()
     groupMenuToolsOpenClose()
+    entriesConstructInocClick()
     // groupActionBtnActivated()
     // groupAddContextMenu()
     // mainLeftClick()
@@ -487,7 +488,17 @@ function createCenterPanelDom() {
   let liEndTag=`</li>`
   let olEndTag=`</ol>`
   let divEndTag=`</div>`
-
+  let divRowTagJustySpBtw=`<div class="row alItCent justySpBw entriesNameBox">`
+  let divEntriesActionImgDiv=`<div class="row alItCent entriesActions">`
+  let imgConstruct=`<img class="svgImgBrown imgConstruct entriesImgConst" src="/assets/pic/construct-outline.svg" alt="" width="30" height="30">`
+  let toolsContainerBegin=`<div class="entriesTools row justySpEv alItCent">`
+  let dataDR=`data-entriesdr="`
+  let editBtnBegin=` <div class="entriesEdit entriesToolsBtn" `
+  let editEnd=`" >Edit</div>`
+  let moveBtnBegin=`<div class="entriesMove entriesToolsBtn" `
+  let moveEnd=`" >Move</div>`
+  let deleteBtnBegin=`<div class="entiesDelete entriesToolsBtn" `
+  let deleteEnd=`"  >Delete</div>`
   for (let i = 0; i < entriesTreeIdsArr.length; i++) {
     for (let y = 0; y < entriesTreeIdsArr[i].length; y++) {
       let groupIds=entriesTreeIdsArr[i][y]
@@ -497,10 +508,18 @@ function createCenterPanelDom() {
         let entriesId=`lev${i}ind${y}ind${z}`
         centerPanelTemplate+=divBeginTag+entriesId+tagEnd // div tag
         let imgSrcNum=entriesTree[i][y][z].iconId
-        centerPanelTemplate+=divRowTag+imgBegin+iconIdsSrcObj[imgSrcNum]+imgCenter+tagEnd //img tag
+        centerPanelTemplate+=divRowTagJustySpBtw+divRowTag+imgBegin+iconIdsSrcObj[imgSrcNum]+imgCenter+tagEnd //container for img & entries name tag
         centerPanelTemplate+=spanBoldBegin+entriesTree[i][y][z].title+spanEnd //span+title
+        centerPanelTemplate+=divEndTag //</div> container for img & entries name tag 
+        centerPanelTemplate+=divEntriesActionImgDiv+imgConstruct+divEndTag // menu icon
         centerPanelTemplate+=divEndTag //</div>
         centerPanelTemplate+=spanBegin+entriesTree[i][y][z].username+spanEnd //username
+        // tools menu container
+        centerPanelTemplate+=toolsContainerBegin 
+        centerPanelTemplate+=editBtnBegin+dataDR+groupIds+editEnd // edit btn
+        centerPanelTemplate+=moveBtnBegin+dataDR+groupIds+moveEnd // move btn
+        centerPanelTemplate+=deleteBtnBegin+dataDR+groupIds+deleteEnd //delete btn
+         centerPanelTemplate+=divEndTag //</div> menu container end
         centerPanelTemplate+=divEndTag
         
       }
@@ -526,6 +545,8 @@ function activatedGroupEntries() {
     dataTarget[i].addEventListener('click',()=>{
       inputSectionHide()
       contextMenuHide()
+      constructIconsHide()
+      hideEntriesMenuToolBox()
       for (let y = 0; y < dataTarget.length; y++) {
         // add clicked div active class, remove other div class
         if (i==y) {
@@ -656,14 +677,20 @@ function createRightPanelDOM() {
 function showHideEntries() {
   const dataEntries=document.querySelectorAll('[data-entries]')
   const dataEntriesId=document.querySelectorAll('[data-entriesId]')
+  const entriesActions=document.querySelectorAll('.entriesActions')
+  const entriesTools=document.querySelectorAll('.entriesTools')
   for (let i = 0; i < dataEntries.length; i++) {
     dataEntries[i].addEventListener("click",()=> {
+      // TODO innen folytasd! menu icon megjelenítés tools menu megjelenítés stb.
       for (let a = 0; a < dataEntries.length; a++) {
         if (a==i) {
           dataEntries[a].classList.add('marked')
+          entriesActions[a].classList.add('active') // actual construct icon show
         }
         if (a!=i) {
           dataEntries[a].classList.remove('marked')
+          entriesActions[a].classList.remove('active') // more consturct icon hide
+          entriesTools[a].classList.remove('active')
 
         }
       }
@@ -682,6 +709,43 @@ function showHideEntries() {
   
   return
 }
+
+// entries construct icon all hide
+
+function constructIconsHide() {
+  const entriesActions=document.querySelectorAll('.entriesActions')
+  for (let i = 0; i < entriesActions.length; i++) {
+    entriesActions[i].classList.remove('active')    
+  }
+return
+}
+
+// entries construc icon click
+
+function entriesConstructInocClick() {
+  const entriesActions=document.querySelectorAll('.entriesActions')
+for (let index = 0; index < entriesActions.length; index++) {
+  entriesActions[index].addEventListener('click', ()=> {showEntriesMenuToolBox(index)})
+}
+return
+}
+
+// show entries menu tool box
+
+function showEntriesMenuToolBox(index) {
+  const entriesTools=document.querySelectorAll('.entriesTools')
+  for (let i = 0; i < entriesTools.length; i++) {
+    i==index ? entriesTools[i].classList.add('active') : entriesTools[i].classList.remove('active')
+  }
+}
+
+// hide entires menu tool box
+
+function hideEntriesMenuToolBox() {
+  const entriesTools=document.querySelectorAll('.entriesTools')
+  entriesTools.forEach((val,ind) => entriesTools[ind].classList.remove('active'))
+}
+// right panel hide
 
 function rightPanelDivHide() {
   const rightPanelDiv=document.querySelectorAll('.rightPanelDiv')
